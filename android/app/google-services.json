@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "959780414643",
+    "project_id": "sugarpros",
+    "storage_bucket": "sugarpros.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:959780414643:android:bad653399fe08d112a3cc6",
+        "android_client_info": {
+          "package_name": "com.app.sugarpros"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCNZinlzc7lGx1gewpfiFwaxLNpHv8h6Qw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
