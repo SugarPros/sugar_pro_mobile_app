@@ -1,8 +1,7 @@
 // ignore_for_file: deprecated_member_use
 
 import 'package:sugar_pros/core/utils/exports.dart';
-import 'package:sugar_pros/ui/views/dashboard_patient/chat/patient_chat_history_view.dart'
-    show PatientChatHistoryView;
+import 'package:sugar_pros/ui/views/dashboard_patient/patient_chat_history/patient_chat_history_view.dart';
 import 'package:sugar_pros/ui/views/dashboard_patient/results/results_view.dart';
 import 'package:sugar_pros/ui/views/dashboard_patient/dashboard_patient_viewmodel.dart';
 import 'package:flutter/scheduler.dart';

@@ -26,6 +26,13 @@ Color hexColor(String hexColor) {
   return Color(temp ?? 0xFFE41613);
 }
 
+DateTime dateText(String? date) {
+  return DateTime.parse(
+    date ?? '',
+  ).add(DateTime.parse(date ?? '').timeZoneOffset);
+}
+
+
 String safeDateParse(String? date) {
   if (date == null || date.isEmpty) return '';
   try {

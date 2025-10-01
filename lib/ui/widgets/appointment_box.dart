@@ -61,13 +61,13 @@ class AppointmentBox extends StatelessWidget {
                 Container(
                   padding: EdgeInsets.all(5.w),
                   decoration: ShapeDecoration(
-                    color: hexColor('#DBEAFE'),
+                    color: Utils.getAppointmentStatusBgColor(status),
                     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4.r)),
                   ),
                   child: Text(
-                    status,
+                    Utils.getAppointmentStatus(status),
                     style: BrandTextStyles.medium.copyWith(
-                      color: hexColor('#1E40AF'),
+                      color: Utils.getAppointmentStatusTxtColor(status),
                       fontSize: 12.sp,
                     ),
                   ),

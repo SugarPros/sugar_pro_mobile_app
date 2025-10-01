@@ -74,6 +74,7 @@ class AuthRemoteDataSourceImpl extends AuthRemoteDataSource {
     return _apiService.makeRequest(
       url: 'login-existing-user',
       method: HttpMethod.post,
+      isFormData: true,
       data: payload,
       fromJson: (json) => PatAuthResponse.fromJson(json),
     );

@@ -25,7 +25,7 @@ class PatientDashboardResponse {
   String? consent;
   String? notificationMethod;
   List<String>? languages;
-  List<Appointments>? appointments;
+  List<PatAppointments>? appointments;
   List<ChatHistory>? chatHistory;
 
   PatientDashboardResponse({
@@ -56,9 +56,9 @@ class PatientDashboardResponse {
     languages = _decodeList(json['languages']);
     
     if (json['appointments'] != null) {
-      appointments = <Appointments>[];
+      appointments = <PatAppointments>[];
       json['appointments'].forEach((v) {
-        appointments!.add(Appointments.fromJson(v));
+        appointments!.add(PatAppointments.fromJson(v));
       });
     }
     if (json['chat_history'] != null) {
@@ -91,7 +91,7 @@ class PatientDashboardResponse {
   }
 }
 
-class Appointments {
+class PatAppointments {
   int? id;
   String? appointmentUid;
   String? fname;
@@ -134,7 +134,7 @@ class Appointments {
   String? updatedAt;
   String? providerName;
 
-  Appointments({
+  PatAppointments({
     this.id,
     this.appointmentUid,
     this.fname,
@@ -178,7 +178,7 @@ class Appointments {
     this.providerName,
   });
 
-  Appointments.fromJson(Map<String, dynamic> json) {
+  PatAppointments.fromJson(Map<String, dynamic> json) {
     id = json['id'];
     appointmentUid = json['appointment_uid'];
     fname = json['fname'];

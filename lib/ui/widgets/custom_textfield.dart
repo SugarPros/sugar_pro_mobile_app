@@ -356,11 +356,13 @@ class _CustomTextFieldState extends State<CustomTextField> {
                                     widget.borderColor ?? hexColor('#D1D5DC')),
                             borderRadius:
                                 BorderRadius.circular(widget.radius ?? 8.r)),
-                    disabledBorder: OutlineInputBorder(
-                        borderSide: BorderSide(
-                            color: widget.borderColor ?? Colors.transparent),
-                        borderRadius:
-                            BorderRadius.circular(widget.radius ?? 8.r)),
+                    disabledBorder: widget.inputBorder ??
+                        OutlineInputBorder(
+                            borderSide: BorderSide(
+                                color:
+                                    widget.borderColor ?? hexColor('#D1D5DC')),
+                            borderRadius:
+                                BorderRadius.circular(widget.radius ?? 8.r)),
                     errorBorder: OutlineInputBorder(
                         borderSide: const BorderSide(color: Colors.red),
                         borderRadius:

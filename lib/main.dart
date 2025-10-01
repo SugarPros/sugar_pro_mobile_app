@@ -1,9 +1,9 @@
 import 'dart:async';
 
-import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/foundation.dart';
+import 'package:flutter_stripe/flutter_stripe.dart';
 import 'package:sugar_pros/firebase_options.dart';
 import 'package:root_jailbreak_sniffer/rjsniffer.dart';
 import 'package:sugar_pros/core/constants/setup_dialog.dart';
@@ -48,8 +48,7 @@ Future deviceStatusCheck() async {
   bool isFridaDetected = false;
 
   if (Platform.isAndroid) {
-    isFridaDetected =
-        await platform.invokeMethod<bool>('isFridaDetected') ?? false;
+    isFridaDetected = await platform.invokeMethod<bool>('isFridaDetected') ?? false;
   }
 
   if (isJailBroken || isEmulator || isFridaDetected) {
@@ -62,10 +61,11 @@ void main() async {
     WidgetsFlutterBinding.ensureInitialized();
     SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
 
+    Stripe.publishableKey =
+        'pk_test_51Q3BprLnk3tLg5TaBCizYvDFV2l0Uqev1OYRDEwcGrJWMY3SY4q1uiyX6EyWhKZH70CH2PDI54pnn9Bq4RitTv7100V2OihLtI';
+
     /// Init Firebase setup
-    await Firebase.initializeApp(
-      options: DefaultFirebaseOptions.currentPlatform,
-    );
+    await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
 
     /// Log all creashlytics errors
     setupLogger(firebaseClient: _crashlytics);
@@ -84,9 +84,7 @@ void main() async {
     }
 
     /// Only collect Crashlytics once the app is in release mode
-    await FirebaseCrashlytics.instance.setCrashlyticsCollectionEnabled(
-      kReleaseMode,
-    );
+    await FirebaseCrashlytics.instance.setCrashlyticsCollectionEnabled(kReleaseMode);
 
     /// Setup dialogs for loaders and all kinds of dialog screens
     setupDialog();
@@ -96,9 +94,7 @@ void main() async {
 }
 
 class App extends StatelessWidget {
-  final FirebaseAnalytics analytics = FirebaseAnalytics.instance;
-
-  App({super.key});
+  const App({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -114,9 +110,7 @@ class App extends StatelessWidget {
       builder:
           (c, _) => LifeCycleManager(
             child: MediaQuery(
-              data: MediaQuery.of(
-                context,
-              ).copyWith(textScaler: const TextScaler.linear(1.0)),
+              data: MediaQuery.of(context).copyWith(textScaler: const TextScaler.linear(1.0)),
               child: MaterialApp(
                 title: 'Sugar Pros',
                 debugShowCheckedModeBanner: false,
@@ -124,10 +118,7 @@ class App extends StatelessWidget {
                 navigatorKey: StackedService.navigatorKey,
                 theme: theme.lightTheme,
                 home: const SplashView(),
-                navigatorObservers: [
-                  StackedService.routeObserver,
-                  FirebaseAnalyticsObserver(analytics: analytics),
-                ],
+                navigatorObservers: [StackedService.routeObserver],
               ),
             ),
           ),

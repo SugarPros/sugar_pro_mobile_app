@@ -17,6 +17,10 @@ class PatientAccountViewModel extends IndexTrackingViewModel {
     _navigationService.navigateTo(Routes.formsAgreement);
   }
 
+  void navigateToPatientLogin() {
+    _navigationService.navigateTo(Routes.patientLogin);
+  }
+
   void forward() {
     pageController.nextPage(
       duration: const Duration(milliseconds: 350),

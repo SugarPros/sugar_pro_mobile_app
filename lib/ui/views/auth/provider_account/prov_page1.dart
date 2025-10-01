@@ -127,7 +127,7 @@ class ProvPage1 extends StatelessWidget {
                             ),
                             10.verticalSpace,
                             TextButton(
-                              onPressed: locator<NavigationService>().back,
+                              onPressed: viewModel.navigateToLogin,
                               child: Center(
                                 child: Text.rich(
                                   TextSpan(

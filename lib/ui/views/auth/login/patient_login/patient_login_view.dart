@@ -21,7 +21,7 @@ class PatientLoginView extends StackedView<PatientLoginViewModel> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        'Provider Log In',
+                        'Patient Log In',
                         style: BrandTextStyles.medium.copyWith(
                           color: hexColor('#121212'),
                           fontSize: 24.sp,
@@ -71,7 +71,6 @@ class PatientLoginView extends StackedView<PatientLoginViewModel> {
                       CustomButton(
                         onTap: () {
                           viewModel.login();
-                          // viewModel.navigateToProviderDashboard();
                         },
                         title: 'Log In',
                       ),

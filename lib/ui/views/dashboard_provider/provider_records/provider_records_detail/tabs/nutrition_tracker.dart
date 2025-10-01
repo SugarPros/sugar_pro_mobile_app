@@ -293,7 +293,6 @@ class LegendItem extends StatelessWidget {
     );
   }
 }
-
 class ConnectionDetailsCard extends StatelessWidget {
   final String title;
   final String connectionName;

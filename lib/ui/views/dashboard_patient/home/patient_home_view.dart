@@ -16,6 +16,7 @@ class PatientHomeView extends StatelessWidget {
             onViewModelReady: (viewModel) {
               WidgetsBinding.instance.addPostFrameCallback((_) {
                 viewModel.fetchPatientChatHistory();
+                viewModel.fetchPatientAppointments();
               });
             },
             builder:
@@ -35,7 +36,6 @@ class PatientHomeView extends StatelessWidget {
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  15.verticalSpace,
                                   CustomTextField(
                                     fillColor: Colors.white,
                                     border: false,
@@ -58,12 +58,15 @@ class PatientHomeView extends StatelessWidget {
                                           fontSize: 18.r,
                                         ),
                                       ),
-                                      Text(
-                                        'See all',
-                                        style: BrandTextStyles.semiBold.copyWith(
-                                          color: hexColor('#2889AA'),
-                                          fontSize: 16.r,
-                                          decoration: TextDecoration.underline,
+                                      InkWell(
+                                        onTap: () => parentModel.setIndex(2),
+                                        child: Text(
+                                          'See all',
+                                          style: BrandTextStyles.semiBold.copyWith(
+                                            color: hexColor('#2889AA'),
+                                            fontSize: 16.r,
+                                            decoration: TextDecoration.underline,
+                                          ),
                                         ),
                                       ),
                                     ],
@@ -79,9 +82,8 @@ class PatientHomeView extends StatelessWidget {
                                       final appointment = viewModel.dashboard?.appointments?[i];
                                       return AppointmentBox(
                                         type: 'Provider',
-                                        patientname:
-                                            '${appointment?.fname ?? ''} ${appointment?.lname ?? ''}',
-                                        status: 'Started',
+                                        patientname: appointment?.usersFullName ?? '',
+                                        status: appointment?.status ?? '',
                                         patientId: appointment?.patientId ?? '',
                                         appointmentId: appointment?.appointmentUid ?? '',
                                         appountmentType:
@@ -93,7 +95,10 @@ class PatientHomeView extends StatelessWidget {
                                           DateFormatUtil.dateFormat,
                                         ),
                                         time: DateFormatUtil.formatTime(appointment?.time),
-                                        onProfileView: () => {},
+                                        onProfileView:
+                                            () => viewModel.navigateToPdAppoitmentDetails(
+                                              appointment,
+                                            ),
                                       );
                                     },
                                   ),

@@ -1,5 +1,4 @@
 import 'package:intl/intl.dart';
-import 'package:sugar_pros/core/enums/transaction_service_type.dart';
 import 'package:sugar_pros/core/utils/exports.dart';
 import 'package:pin_code_fields/pin_code_fields.dart';
 
@@ -272,50 +271,43 @@ class Utils {
     selectedFillColor: Theme.of(context).colorScheme.inversePrimary,
   );
 
-  static int getTransactionServiceType(TransactionServiceType val) {
-    int type;
-    switch (val) {
-      case TransactionServiceType.ownAccountTransfer:
-        type = 1;
-        break;
-      case TransactionServiceType.localTransfer:
-        type = 2;
-        break;
-      case TransactionServiceType.interbankTransfer:
-        type = 3;
-        break;
-      case TransactionServiceType.billPayment:
-        type = 4;
-        break;
-      case TransactionServiceType.airtimePurchase:
-        type = 5;
-        break;
+   static String getAppointmentStatus(String value) {
+    switch (value) {
+      case '0':
+        return 'Pending';
+      case '1':
+        return 'Started';
+      case '5':
+        return 'Completed';
+      default:
+        return 'Pending';
     }
-    return type;
   }
 
-  static TransactionServiceType getTransactionServiceTypefromIndex(int val) {
-    TransactionServiceType type;
-    switch (val) {
-      case 1:
-        type = TransactionServiceType.ownAccountTransfer;
-        break;
-      case 2:
-        type = TransactionServiceType.localTransfer;
-        break;
-      case 3:
-        type = TransactionServiceType.interbankTransfer;
-        break;
-      case 4:
-        type = TransactionServiceType.billPayment;
-        break;
-      case 5:
-        type = TransactionServiceType.airtimePurchase;
-        break;
+  static Color getAppointmentStatusBgColor(String value) {
+    switch (value) {
+      case '0':
+        return hexColor('#fee2e2');
+      case '1':
+        return hexColor('#DBEAFE');
+      case '5':
+        return hexColor('#dcfce7');
       default:
-        type = TransactionServiceType.airtimePurchase;
+        return hexColor('#fee2e2');
     }
-    return type;
+  }
+
+  static Color getAppointmentStatusTxtColor(String value) {
+    switch (value) {
+      case '0':
+        return hexColor('#dc2626');
+      case '1':
+        return hexColor('#1E40AF');
+      case '5':
+        return hexColor('#16a34a');
+      default:
+        return hexColor('#dc2626');
+    }
   }
 
   static String generateTransactionReference() {

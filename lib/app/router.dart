@@ -1,4 +1,6 @@
 // ignore_for_file: unused_local_variable
+import 'package:sugar_pros/core/models/chat_list_response.dart';
+import 'package:sugar_pros/core/models/pat_appointment_respons.dart';
 import 'package:sugar_pros/core/models/patient_record_response.dart';
 import 'package:sugar_pros/core/models/patients_chat_respose.dart';
 import 'package:sugar_pros/core/models/pro_appointments_response.dart';
@@ -11,7 +13,14 @@ import 'package:sugar_pros/ui/views/auth/login/provider_login/provider_login_vie
 import 'package:sugar_pros/ui/views/auth/patient_account/forms_agreement/forms_agreement_view.dart';
 import 'package:sugar_pros/ui/views/auth/patient_account/patient_account_view.dart';
 import 'package:sugar_pros/ui/views/auth/provider_account/provider_account_view.dart';
+import 'package:sugar_pros/ui/views/dashboard_patient/appointment/book_appointment/book_appointment_view.dart';
+import 'package:sugar_pros/ui/views/dashboard_patient/appointment/patient_appointment_details/pat_apointment_detail_view.dart';
 import 'package:sugar_pros/ui/views/dashboard_patient/dashboard_patient_view.dart';
+import 'package:sugar_pros/ui/views/dashboard_patient/patient_chat_history/patient_chat/pa_ai_chat/pa_ai_chat_view.dart';
+import 'package:sugar_pros/ui/views/dashboard_patient/patient_chat_history/patient_chat/pa_ai_chat_history/pa_ai_chat_history_view.dart';
+import 'package:sugar_pros/ui/views/dashboard_patient/patient_chat_history/patient_chat/patient_chats_view.dart';
+import 'package:sugar_pros/ui/views/dashboard_patient/results/dexcom/dexcom_view.dart';
+import 'package:sugar_pros/ui/views/dashboard_patient/results/nutrition_tracker/nutrition_tracker_view.dart';
 import 'package:sugar_pros/ui/views/dashboard_provider/dashboard_provider_view.dart';
 import 'package:sugar_pros/ui/views/dashboard_provider/provider_appointment/provider_appointment_details/pd_apointment_detail_view.dart';
 import 'package:sugar_pros/ui/views/dashboard_provider/provider_chat_history/provider_chats/pd_ai_chat/pd_ai_chat_view.dart';
@@ -36,10 +45,17 @@ abstract class Routes {
   static const providerProfileAccountView = '/providerAccountView';
   static const providerProfileAccountInfoView = '/providerAccountInfoView';
   static const providerChats = '/providerChats';
+  static const patientChats = '/patientChats';
   static const pdAppointmentDetails = '/pdAppointmentDetails';
+  static const patAppointmentDetails = '/patAppointmentDetails';
   static const pdRecordDetails = '/pdRecordDetails';
   static const pdAiChatHstory = '/pdAiChatHstory';
   static const pdAiChatView = '/pdAiChatView';
+  static const paAiChatHstory = '/paAiChatHstory';
+  static const paAiChatView = '/paAiChatView';
+  static const dexcom = '/dexcom';
+  static const nutritionTracker = '/nutritionTrancer';
+  static const bookAppointment = '/bookAppointment';
 }
 
 class Routers {
@@ -114,6 +130,12 @@ class Routers {
           builder: (context) => PdAppointmentDetailView(app: app),
           settings: settings,
         );
+      case Routes.patAppointmentDetails:
+        final app = args as PatientAppointments;
+        return CupertinoPageRoute<dynamic>(
+          builder: (context) => PatAppointmentDetailView(app: app),
+          settings: settings,
+        );
       case Routes.pdRecordDetails:
         final rec = args as Map<String, dynamic>;
         final patient = rec['patient'] as PatientsList;
@@ -133,9 +155,41 @@ class Routers {
           builder: (context) => PdAiChatView(chatItem: chatItem),
           settings: settings,
         );
+      case Routes.paAiChatHstory:
+        return CupertinoPageRoute<dynamic>(
+          builder: (context) => const PaAiChatHistoryView(),
+          settings: settings,
+        );
+      case Routes.paAiChatView:
+        final chatId = args as String;
+        return CupertinoPageRoute<dynamic>(
+          builder: (context) => PaAiChatView(chatId: chatId),
+          settings: settings,
+        );
       case Routes.patientLogin:
         return CupertinoPageRoute<dynamic>(
           builder: (context) => const PatientLoginView(),
+          settings: settings,
+        );
+      case Routes.patientChats:
+        final chatItem = args as ChatHistoryList;
+        return CupertinoPageRoute<dynamic>(
+          builder: (context) => PatientChatsView(chatItem: chatItem),
+          settings: settings,
+        );
+      case Routes.dexcom:
+        return CupertinoPageRoute<dynamic>(
+          builder: (context) => const DexcomView(),
+          settings: settings,
+        );
+      case Routes.nutritionTracker:
+        return CupertinoPageRoute<dynamic>(
+          builder: (context) => const NutritionTrackerView(),
+          settings: settings,
+        );
+      case Routes.bookAppointment:
+        return CupertinoPageRoute<dynamic>(
+          builder: (context) => const BookAppointmentView(),
           settings: settings,
         );
       default:

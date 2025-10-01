@@ -1,13 +1,13 @@
 import 'package:dartz/dartz.dart';
 import 'package:sugar_pros/core/data_source/patient_remote_data_source/patient_remote_data_source.dart';
 import 'package:sugar_pros/core/enums/http_method.dart';
-import 'package:sugar_pros/core/models/ai_chat_message_response.dart';
 import 'package:sugar_pros/core/models/ai_reply_response.dart';
 import 'package:sugar_pros/core/models/chat_list_response.dart';
-import 'package:sugar_pros/core/models/chat_messages_response.dart';
+import 'package:sugar_pros/core/models/nutrition_tracker_response.dart';
+import 'package:sugar_pros/core/models/pat_appointment_respons.dart';
+import 'package:sugar_pros/core/models/patient_ai_chatlist_response.dart';
 import 'package:sugar_pros/core/models/patient_record_response.dart';
-import 'package:sugar_pros/core/models/pro_appointments_response.dart';
-import 'package:sugar_pros/core/models/provider_ai_chatlist_response.dart';
+import 'package:sugar_pros/core/models/related_chat_repsonse.dart';
 import 'package:sugar_pros/core/services/api/api_service.dart';
 import 'package:sugar_pros/core/utils/exports.dart';
 
@@ -15,11 +15,11 @@ class PatientRemoteDataSourceImpl extends PatientRemoteDataSource {
   final ApiService _apiService = locator<ApiService>();
 
   @override
-  Future<Either<AppError, ProAppointmentResponse>> patAppointments() {
+  Future<Either<AppError, PatAppointmentResponse>> patAppointments() {
     return _apiService.makeRequest(
-      url: 'provider/appointments',
+      url: 'appointments',
       method: HttpMethod.get,
-      fromJson: (json) => ProAppointmentResponse.fromJson(json),
+      fromJson: (json) => PatAppointmentResponse.fromJson(json),
     );
   }
 
@@ -42,39 +42,31 @@ class PatientRemoteDataSourceImpl extends PatientRemoteDataSource {
   }
 
   @override
-  Future<Either<AppError, ChatMessagesResponse>> getPatientChatsById(String? id) {
-    return _apiService.makeRequest(
-      url: 'provider/chats/$id',
-      method: HttpMethod.get,
-      fromJson: (json) => ChatMessagesResponse.fromJson(json),
-    );
-  }
-
-  @override
   Future<Either<AppError, dynamic>> sendMessage({required String? id, required String? message}) {
     return _apiService.makeRequest(
-      url: 'provider/chats/$id',
+      url: 'add-new-message',
       method: HttpMethod.post,
-      data: {'message': message},
+      data: {'send_text_to': id, 'message': message},
+      isFormData: true,
       fromJson: (json) => json,
     );
   }
 
   @override
-  Future<Either<AppError, ProviderAIChatListResponse>> getAIChats() {
+  Future<Either<AppError, PatientAIChatListResponse>> getAIChats() {
     return _apiService.makeRequest(
-      url: 'provider/ai-chat',
+      url: 'sugarpro-ai',
       method: HttpMethod.get,
-      fromJson: (json) => ProviderAIChatListResponse.fromJson(json),
+      fromJson: (json) => PatientAIChatListResponse.fromJson(json),
     );
   }
 
   @override
-  Future<Either<AppError, AIChatMessageResponse>> getProviderAIChatsById(String? id) {
+  Future<Either<AppError, PatientAIChatListResponse>> getPatientAIChatsById(String? id) {
     return _apiService.makeRequest(
-      url: 'provider/ai-chat/$id',
+      url: 'sugarpro-ai?chatuid=$id',
       method: HttpMethod.get,
-      fromJson: (json) => AIChatMessageResponse.fromJson(json),
+      fromJson: (json) => PatientAIChatListResponse.fromJson(json),
     );
   }
 
@@ -84,10 +76,65 @@ class PatientRemoteDataSourceImpl extends PatientRemoteDataSource {
     required String? message,
   }) {
     return _apiService.makeRequest(
-      url: 'provider/ai-chat/$id',
+      url: 'chatgpt-response',
       method: HttpMethod.post,
-      data: {'message': message},
+      isFormData: true,
+      data: {'chatuid': id, 'message': message},
       fromJson: (json) => AIReplyResponse.fromJson(json),
+    );
+  }
+
+  @override
+  Future<Either<AppError, RelatedChatResponse>> getRelatedChats(String? messageWith) {
+    return _apiService.makeRequest(
+      url: 'fetch-related-chats',
+      method: HttpMethod.post,
+      data: {'message_with': messageWith},
+      isFormData: true,
+      fromJson: (json) => RelatedChatResponse.fromJson(json),
+    );
+  }
+
+  @override
+  Future<Either<AppError, dynamic>> clearChat() {
+    return _apiService.makeRequest(
+      url: 'clear-chat-session',
+      method: HttpMethod.post,
+      fromJson: (json) => json,
+    );
+  }
+
+  @override
+  Future<Either<AppError, dynamic>> dexcom() {
+    return _apiService.makeRequest(url: 'dexcom', method: HttpMethod.get, fromJson: (json) => json);
+  }
+
+  @override
+  Future<Either<AppError, NutritionTrackerResponse>> nutritionTracker() {
+    return _apiService.makeRequest(
+      url: 'nutrition-tracker',
+      method: HttpMethod.get,
+      fromJson: (json) => NutritionTrackerResponse.fromJson(json),
+    );
+  }
+
+  @override
+  Future<Either<AppError, dynamic>> joinMeeting(String? appointmentId) {
+    return _apiService.makeRequest(
+      url: 'join-meeting/$appointmentId',
+      method: HttpMethod.get,
+      fromJson: (json) => json,
+    );
+  }
+
+  @override
+  Future<Either<AppError, dynamic>> initiate({DateTime? date, String? time}) {
+    return _apiService.makeRequest(
+      url: 'appointments/initiate',
+      method: HttpMethod.post,
+      data: {'date': '2025-10-12', 'time': '12:00'},
+      // isFormData: true,
+      fromJson: (json) => json,
     );
   }
 }

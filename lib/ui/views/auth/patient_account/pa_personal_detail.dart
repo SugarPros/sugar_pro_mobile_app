@@ -92,26 +92,29 @@ class PaPersonalDetails extends StatelessWidget {
                         title: 'Sign Up',
                       ),
                       20.verticalSpace,
-                      Text.rich(
-                        TextSpan(
-                          children: [
-                            TextSpan(
-                              text: 'Already have an account? ',
-                              style: BrandTextStyles.medium.copyWith(
-                                color: hexColor('#3E3E3E'),
-                                fontSize: 14.sp,
+                      InkWell(
+                        onTap: viewModel.navigateToPatientLogin,
+                        child: Text.rich(
+                          TextSpan(
+                            children: [
+                              TextSpan(
+                                text: 'Already have an account? ',
+                                style: BrandTextStyles.medium.copyWith(
+                                  color: hexColor('#3E3E3E'),
+                                  fontSize: 14.sp,
+                                ),
                               ),
-                            ),
-                            TextSpan(
-                              text: 'Log in',
-                              style: BrandTextStyles.medium.copyWith(
-                                color: BrandColors.primary,
-                                fontSize: 14.sp,
+                              TextSpan(
+                                text: 'Log in',
+                                style: BrandTextStyles.medium.copyWith(
+                                  color: BrandColors.primary,
+                                  fontSize: 14.sp,
+                                ),
                               ),
-                            ),
-                          ],
+                            ],
+                          ),
+                          textAlign: TextAlign.center,
                         ),
-                        textAlign: TextAlign.center,
                       ),
                       SizedBox(height: 20.h + bottomPadding(context)),
                     ],

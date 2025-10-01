@@ -1,19 +1,25 @@
-
+import 'package:sugar_pros/core/models/chat_list_response.dart';
 import 'package:sugar_pros/core/utils/exports.dart';
-import 'package:sugar_pros/ui/views/dashboard_patient/chat/patient_chat_history_viewmodel.dart';
+import 'package:sugar_pros/ui/views/dashboard_patient/patient_chat_history/patient_chat_history_viewmodel.dart';
 import 'package:sugar_pros/ui/widgets/custom_network_image.dart';
 import 'package:sugar_pros/ui/widgets/svg_icon.dart';
 
-
 class PatientChatHistoryView extends StackedView<PatientChatHistoryViewModel> {
- const PatientChatHistoryView({super.key});
+  const PatientChatHistoryView({super.key});
 
- @override
- Widget builder(BuildContext context, PatientChatHistoryViewModel viewModel, Widget? child) {
-  return Scaffold(
+  @override
+  void onViewModelReady(PatientChatHistoryViewModel viewModel) {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      viewModel.fetchPatientChatHistory();
+    });
+  }
+
+  @override
+  Widget builder(BuildContext context, PatientChatHistoryViewModel viewModel, Widget? child) {
+    return Scaffold(
       backgroundColor: hexColor('#F3F4F6'),
       floatingActionButton: FloatingActionButton(
-        onPressed: () {},
+        onPressed: viewModel.navigateToPaAiChatHistory,
         backgroundColor: hexColor('#2889AA'),
         child: SvgIcon('ai-chat'.svg),
       ),
@@ -115,7 +121,7 @@ class PatientChatHistoryView extends StackedView<PatientChatHistoryViewModel> {
                       padding: EdgeInsets.zero,
                       physics: NeverScrollableScrollPhysics(),
                       shrinkWrap: true,
-                      itemCount: viewModel.chatHistoryList?.length ?? 0,
+                      itemCount: viewModel.chatHistoryList?.take(1).length ?? 0,
                       separatorBuilder: (ctx, i) => 20.verticalSpace,
                       itemBuilder: (ctx, i) {
                         final chat = viewModel.chatHistoryList?[i];
@@ -125,7 +131,7 @@ class PatientChatHistoryView extends StackedView<PatientChatHistoryViewModel> {
                           lastMessage: chat?.mainMessage,
                           messageStatus: chat?.status,
                           messageTime: chat?.createdAt,
-                          onTap: () => {}
+                          onTap: () => viewModel.navigateToChatView(chat ?? ChatHistoryList()),
                         );
                       },
                     ),
@@ -138,10 +144,11 @@ class PatientChatHistoryView extends StackedView<PatientChatHistoryViewModel> {
         ],
       ),
     );
- }
+  }
 
- @override
- PatientChatHistoryViewModel viewModelBuilder(BuildContext context) => PatientChatHistoryViewModel();
+  @override
+  PatientChatHistoryViewModel viewModelBuilder(BuildContext context) =>
+      PatientChatHistoryViewModel();
 }
 
 class ChatTile extends StatelessWidget {
@@ -218,7 +225,9 @@ class ChatTile extends StatelessWidget {
                 ),
               ),
               10.verticalSpace,
-            messageStatus == 'seen' ?  SvgIcon('double-check'.svg) : Icon(Icons.check, color: Colors.black, size: 15,),
+              messageStatus == 'seen'
+                  ? SvgIcon('double-check'.svg)
+                  : Icon(Icons.check, color: Colors.black, size: 15),
             ],
           ),
         ],
