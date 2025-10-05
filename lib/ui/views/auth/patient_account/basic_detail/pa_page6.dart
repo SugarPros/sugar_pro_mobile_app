@@ -1,15 +1,16 @@
 import 'package:sugar_pros/core/utils/exports.dart';
-import 'package:sugar_pros/ui/views/auth/patient_account/patient_account_viewmodel.dart';
+import 'package:sugar_pros/ui/views/auth/patient_account/basic_detail/basic_details_viewmodel.dart';
 import 'package:sugar_pros/ui/widgets/svg_icon.dart';
 
-class PaPage5 extends StatelessWidget {
-  const PaPage5({super.key});
+class PaPage6 extends StatelessWidget {
+  const PaPage6({super.key});
 
   static GlobalKey<FormState> formKey = GlobalKey<FormState>();
 
   @override
   Widget build(BuildContext context) {
-    return BasePartialBuild<PatientAccountViewModel>(
+    final FocusNode node = FocusScope.of(context);
+    return BasePartialBuild<BasicDetailsViewModel>(
       builder:
           (context, viewModel) => Scaffold(
             body: Column(
@@ -19,7 +20,7 @@ class PaPage5 extends StatelessWidget {
                 Padding(
                   padding: EdgeInsets.only(left: 18.w),
                   child: InkWell(
-                    onTap: () => log('ddd'),
+                    onTap: () => viewModel.backward(),
                     child: Container(
                       color: Colors.transparent,
                       padding: EdgeInsets.symmetric(vertical: 8.h),
@@ -36,21 +37,9 @@ class PaPage5 extends StatelessWidget {
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        StepperCard(
-                          isActive: true,
-                          step: '2',
-                          title: 'Contact & Safety',
-                        ),
-                        StepperCard(
-                          isActive: true,
-                          step: '3',
-                          title: 'Home Address',
-                        ),
-                        StepperCard(
-                          isActive: false,
-                          step: '4',
-                          title: 'Insurance & ID',
-                        ),
+                        StepperCard(isActive: true, step: '3', title: 'Home Address'),
+                        StepperCard(isActive: true, step: '4', title: 'Insurance & ID'),
+                        StepperCard(isActive: false, step: '5', title: 'Communication'),
                       ],
                     ),
                   ),
@@ -59,46 +48,43 @@ class PaPage5 extends StatelessWidget {
                 Expanded(
                   child: Padding(
                     padding: EdgeInsets.symmetric(horizontal: 18.w),
-                    child: Column(
-                      children: [
-                        20.verticalSpace,
-                        Text(
-                          'Home Address',
-                          style: BrandTextStyles.regular.copyWith(
-                            fontSize: 14.sp,
-                            color: hexColor('#5C5A5A'),
+                    child: Form(
+                      key: formKey,
+                      child: Column(
+                        children: [
+                          20.verticalSpace,
+                          Text(
+                            'Insurance & ID',
+                            style: BrandTextStyles.regular.copyWith(
+                              fontSize: 14.sp,
+                              color: hexColor('#5C5A5A'),
+                            ),
                           ),
-                        ),
-                        Text(
-                          'What’s your current\naddress?',
-                          textAlign: TextAlign.center,
-                          style: BrandTextStyles.medium.copyWith(
-                            fontSize: 19.sp,
-                            color: hexColor('#121212'),
+                          Text(
+                            'For billing purposes, please enter\nyour Medicare number.',
+                            textAlign: TextAlign.center,
+                            style: BrandTextStyles.medium.copyWith(
+                              fontSize: 19.sp,
+                              color: hexColor('#121212'),
+                            ),
                           ),
-                        ),
-                        30.verticalSpace,
-                        CustomTextField(
-                          label: 'Street ',
-                          hintText: 'Street',
-                        ),
-                        20.verticalSpace,
-                        CustomTextField(
-                          label: 'City',
-                          hintText: 'Select here',
-                        ),
-                        20.verticalSpace,
-                        CustomTextField(
-                          label: 'State',
-                          hintText: 'Select here',
-                        ),
-                        20.verticalSpace,
-                        CustomTextField(
-                          label: 'Zip Code',
-                          hintText: 'Type here',
-                        ),
-                        20.verticalSpace
-                      ],
+                          30.verticalSpace,
+                          CustomTextField(
+                            label: 'Medicare Number ',
+                            hintText: 'Type here',
+                            controller: viewModel.medicareNumberCtrl,
+                            validate: false,
+                          ),
+                          20.verticalSpace,
+                          CustomTextField(
+                            label: 'Group Number (If Applicable)',
+                            hintText: 'Type here',
+                            controller: viewModel.groupNumberCtrl,
+                            validate: false,
+                          ),
+                          20.verticalSpace,
+                        ],
+                      ),
                     ),
                   ),
                 ),
@@ -108,7 +94,7 @@ class PaPage5 extends StatelessWidget {
                     children: [
                       Expanded(
                         child: CustomButton(
-                          onTap: () {},
+                          onTap: viewModel.cancel,
                           title: 'Cancel',
                           backgroundColor: hexColor('#E5E7EB'),
                           textColor: hexColor('#4A5565'),
@@ -118,7 +104,11 @@ class PaPage5 extends StatelessWidget {
                       Expanded(
                         child: CustomButton(
                           onTap: () {
-                             viewModel.forward();
+                            node.unfocus();
+                            if (formKey.currentState!.validate()) {
+                              formKey.currentState!.validate();
+                              viewModel.forward();
+                            }
                           },
                           title: 'Next',
                         ),
@@ -135,12 +125,7 @@ class PaPage5 extends StatelessWidget {
 }
 
 class StepperCard extends StatelessWidget {
-  const StepperCard({
-    super.key,
-    required this.step,
-    required this.title,
-    required this.isActive,
-  });
+  const StepperCard({super.key, required this.step, required this.title, required this.isActive});
 
   final String step;
   final String title;
@@ -156,9 +141,7 @@ class StepperCard extends StatelessWidget {
           decoration: ShapeDecoration(
             color: isActive ? hexColor('#FF6400') : Colors.transparent,
             shape: CircleBorder(
-              side: BorderSide(
-                color: isActive ? hexColor('#FF6400') : hexColor('#A1A1A1'),
-              ),
+              side: BorderSide(color: isActive ? hexColor('#FF6400') : hexColor('#A1A1A1')),
             ),
           ),
           child: Center(

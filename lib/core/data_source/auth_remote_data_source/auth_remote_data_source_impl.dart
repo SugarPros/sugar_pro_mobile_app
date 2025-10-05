@@ -5,10 +5,14 @@ import 'package:sugar_pros/core/data_source/auth_remote_data_source/auth_remote_
 import 'package:sugar_pros/core/enums/http_method.dart';
 import 'package:sugar_pros/core/models/authentication_response/pat_auth_response.dart';
 import 'package:sugar_pros/core/models/authentication_response/pro_auth_response.dart';
+import 'package:sugar_pros/core/models/complaince_response.dart';
 import 'package:sugar_pros/core/models/pat_basic_details.dart';
 import 'package:sugar_pros/core/models/patient_account_response.dart';
+import 'package:sugar_pros/core/models/patient_agreement_response.dart';
 import 'package:sugar_pros/core/models/patient_dashboard_response.dart';
+import 'package:sugar_pros/core/models/privacy_response.dart';
 import 'package:sugar_pros/core/models/pro_dashboard_response.dart';
+import 'package:sugar_pros/core/models/self_payment_response.dart';
 import 'package:sugar_pros/core/services/api/api_service.dart';
 import 'package:sugar_pros/core/utils/exports.dart';
 import 'package:mime/mime.dart';
@@ -81,15 +85,6 @@ class AuthRemoteDataSourceImpl extends AuthRemoteDataSource {
       isFormData: true,
       data: payload,
       fromJson: (json) => PatAuthResponse.fromJson(json),
-    );
-  }
-
-  @override
-  Future<Either<AppError, PatBasicDetails>> patBasicDetails() {
-    return _apiService.makeRequest(
-      url: 'basic',
-      method: HttpMethod.get,
-      fromJson: (json) => PatBasicDetails.fromJson(json),
     );
   }
 
@@ -334,11 +329,7 @@ class AuthRemoteDataSourceImpl extends AuthRemoteDataSource {
     required String? email,
     required String? otp,
   }) async {
-    final Map<String, dynamic> payload = {
-      "username": username,
-      "email": email,
-      "otp": otp,
-    };
+    final Map<String, dynamic> payload = {"username": username, "email": email, "otp": otp};
 
     return _apiService.makeRequest(
       url: 'verify-otp',
@@ -349,8 +340,8 @@ class AuthRemoteDataSourceImpl extends AuthRemoteDataSource {
     );
   }
 
-   @override
-  Future<Either<AppError, dynamic>> sugnupNewUser({
+  @override
+  Future<Either<AppError, dynamic>> signupNewUser({
     required String? username,
     required String? email,
     required String? prefixCode,
@@ -367,6 +358,227 @@ class AuthRemoteDataSourceImpl extends AuthRemoteDataSource {
 
     return _apiService.makeRequest(
       url: 'signup-new-user',
+      method: HttpMethod.post,
+      data: payload,
+      isFormData: true,
+      fromJson: (data) => data,
+    );
+  }
+
+  @override
+  Future<Either<AppError, PatBasicDetails>> getPatBasicDetails() {
+    return _apiService.makeRequest(
+      url: 'basic',
+      method: HttpMethod.get,
+      fromJson: (json) => PatBasicDetails.fromJson(json),
+    );
+  }
+
+  @override
+  Future<Either<AppError, dynamic>> patBasicDetails({
+    String? fname,
+    String? mname,
+    String? lname,
+    String? dob,
+    String? gender,
+    String? email,
+    String? phone,
+    String? street,
+    String? city,
+    String? state,
+    String? zipCode,
+    String? medicareNumber,
+    String? groupNumber,
+    dynamic license,
+    String? ssn,
+    String? notificationType,
+  }) async {
+    final fileName = license.toString().split('/').last;
+    final fileMimeType = lookupMimeType(license.toString()) ?? 'application/octet-stream';
+
+    final Map<String, dynamic> payload = {
+      "fname": fname,
+      "mname": mname,
+      "lname": lname,
+      "dob": dob,
+      "gender": gender,
+      "email": email,
+      "phone": phone,
+      "street": street,
+      "city": city,
+      "state": state,
+      "zip_code": zipCode,
+      "medicare_number": medicareNumber,
+      "group_number": groupNumber,
+      "license": await MultipartFile.fromFile(
+        license.toString(),
+        filename: fileName,
+        contentType: MediaType.parse(fileMimeType),
+      ),
+      "ssn": ssn,
+      "notification_type": notificationType,
+    };
+
+    return _apiService.makeRequest(
+      url: 'basic',
+      method: HttpMethod.post,
+      isFormData: true,
+      data: payload,
+      fromJson: (json) => json,
+    );
+  }
+
+  @override
+  Future<Either<AppError, PrivacyResponse>> getPrivacyForm() {
+    return _apiService.makeRequest(
+      url: 'privacy',
+      method: HttpMethod.get,
+      fromJson: (json) => PrivacyResponse.fromJson(json),
+    );
+  }
+
+  @override
+  Future<Either<AppError, ComplianceResponse>> getComplianceForm() {
+    return _apiService.makeRequest(
+      url: 'compliance',
+      method: HttpMethod.get,
+      fromJson: (json) => ComplianceResponse.fromJson(json),
+    );
+  }
+
+  @override
+  Future<Either<AppError, PatientAgreementResponse>> getFinancialAgreementForm() {
+    return _apiService.makeRequest(
+      url: 'financial-responsibility-aggreement',
+      method: HttpMethod.get,
+      fromJson: (json) => PatientAgreementResponse.fromJson(json),
+    );
+  }
+
+  @override
+  Future<Either<AppError, SelfPaymentResponse>> getSelfPaymentForm() {
+    return _apiService.makeRequest(
+      url: 'agreement-for-self-payment',
+      method: HttpMethod.get,
+      fromJson: (json) => SelfPaymentResponse.fromJson(json),
+    );
+  }
+
+  @override
+  Future<Either<AppError, dynamic>> privacyForm({
+    required String? firstName,
+    required String? lastName,
+    required String? date,
+    required String? userMessage,
+    required String? isPrivacyPractice,
+    required String? patientName,
+    required String? repName,
+    required String? serviceDate,
+    required String? relationship,
+  }) async {
+    final Map<String, dynamic> payload = {
+      "fname": firstName,
+      "lname": lastName,
+      "date": date,
+      "users_message": userMessage,
+      "notice_of_privacy_practice": isPrivacyPractice,
+      "patients_name": patientName,
+      "representatives_name": repName,
+      "service_taken_date": serviceDate,
+      "relation_with_patient": relationship,
+    };
+
+    return _apiService.makeRequest(
+      url: 'privacy',
+      method: HttpMethod.post,
+      data: payload,
+      isFormData: true,
+      fromJson: (data) => data,
+    );
+  }
+
+  @override
+  Future<Either<AppError, dynamic>> complianceForm({
+    required String? patientName,
+    required String? dob,
+    required dynamic patientSignature,
+    required String? patientDob,
+    required dynamic repSignature,
+    required String? repDate,
+    required String? natureWithPatient,
+  }) async {
+    final patientSignatureFileName = patientSignature.toString().split('/').last;
+    final patientSignatureMimeType =
+        lookupMimeType(patientSignature.toString()) ?? 'application/octet-stream';
+
+    final repSignatureFileName = repSignature.toString().split('/').last;
+    final repSignatureMimeType =
+        lookupMimeType(repSignatureFileName.toString()) ?? 'application/octet-stream';
+
+    final Map<String, dynamic> payload = {
+      "patients_name": patientName,
+      "dob": dob,
+      "patients_signature": await MultipartFile.fromFile(
+        patientSignature.toString(),
+        filename: patientSignatureFileName,
+        contentType: MediaType.parse(patientSignatureMimeType),
+      ),
+      "patients_dob": patientDob,
+      "representative_signature": await MultipartFile.fromFile(
+        repSignature.toString(),
+        filename: repSignatureFileName,
+        contentType: MediaType.parse(repSignatureMimeType),
+      ),
+      "representative_dob": repDate,
+      "nature_with_patient": natureWithPatient,
+    };
+
+    return _apiService.makeRequest(
+      url: 'compliance',
+      method: HttpMethod.post,
+      data: payload,
+      isFormData: true,
+      fromJson: (data) => data,
+    );
+  }
+
+   @override
+  Future<Either<AppError, dynamic>> agreementForm({
+    required String? userName,
+    required String? patientName,
+    required String? patientSignatureDate,
+    required String? relationship,
+  }) async {
+    final Map<String, dynamic> payload = {
+      "user_name": userName,
+      "patients_name": patientName,
+      "patients_signature_date": patientSignatureDate,
+      "relationship": relationship,
+    };
+
+    return _apiService.makeRequest(
+      url: 'financial-responsibility-aggreement',
+      method: HttpMethod.post,
+      data: payload,
+      isFormData: true,
+      fromJson: (data) => data,
+    );
+  }
+
+  @override
+  Future<Either<AppError, dynamic>> selfPaymentForm({
+    required String? userName,
+    required String? patientName,
+    required String? patientSignatureDate,
+  }) async {
+    final Map<String, dynamic> payload = {
+      "user_name": userName,
+      "patients_name": patientName,
+      "patients_signature_date": patientSignatureDate
+    };
+
+    return _apiService.makeRequest(
+      url: 'agreement-for-self-payment',
       method: HttpMethod.post,
       data: payload,
       isFormData: true,

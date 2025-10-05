@@ -1,6 +1,6 @@
 import 'package:intl_phone_field/phone_number.dart';
 import 'package:sugar_pros/core/utils/exports.dart';
-import 'package:sugar_pros/ui/views/auth/patient_account/patient_account_viewmodel.dart';
+import 'package:sugar_pros/ui/views/auth/patient_account/patient_signup/patient_signup_viewmodel.dart';
 import 'package:sugar_pros/ui/widgets/custom_phone_field.dart';
 
 class PaPersonalDetails extends StatelessWidget {
@@ -11,7 +11,7 @@ class PaPersonalDetails extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final FocusNode node = FocusScope.of(context);
-    return BasePartialBuild<PatientAccountViewModel>(
+    return BasePartialBuild<PatientSignupViewModel>(
       builder:
           (context, viewModel) => Scaffold(
             body: SafeArea(

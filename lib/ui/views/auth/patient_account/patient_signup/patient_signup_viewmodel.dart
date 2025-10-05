@@ -1,6 +1,6 @@
 import 'package:sugar_pros/core/utils/exports.dart';
 
-class PatientAccountViewModel extends IndexTrackingViewModel {
+class PatientSignupViewModel extends IndexTrackingViewModel {
   final NavigationService _navigationService = locator<NavigationService>();
 
   final PageController pageController = PageController();
@@ -40,8 +40,8 @@ class PatientAccountViewModel extends IndexTrackingViewModel {
     notifyListeners();
   }
 
-  void navigateToFormsAgreement() {
-    _navigationService.navigateTo(Routes.formsAgreement);
+  void navigateToBasicDetails() {
+    _navigationService.navigateTo(Routes.basicDetails);
   }
 
   void navigateToPatientLogin() {

@@ -1,10 +1,14 @@
 import 'package:dartz/dartz.dart';
 import 'package:sugar_pros/core/models/authentication_response/pat_auth_response.dart';
 import 'package:sugar_pros/core/models/authentication_response/pro_auth_response.dart';
+import 'package:sugar_pros/core/models/complaince_response.dart';
 import 'package:sugar_pros/core/models/pat_basic_details.dart';
 import 'package:sugar_pros/core/models/patient_account_response.dart';
+import 'package:sugar_pros/core/models/patient_agreement_response.dart';
 import 'package:sugar_pros/core/models/patient_dashboard_response.dart';
+import 'package:sugar_pros/core/models/privacy_response.dart';
 import 'package:sugar_pros/core/models/pro_dashboard_response.dart';
+import 'package:sugar_pros/core/models/self_payment_response.dart';
 import 'package:sugar_pros/core/utils/exports.dart';
 
 abstract class AuthRemoteDataSource {
@@ -29,8 +33,6 @@ abstract class AuthRemoteDataSource {
     required String? email,
     required String? password,
   });
-
-  Future<Either<AppError, PatBasicDetails>> patBasicDetails();
 
   Future<Either<AppError, PatientDashboardResponse>> patDashboard();
 
@@ -96,11 +98,75 @@ abstract class AuthRemoteDataSource {
     required String? otp,
   });
 
-  Future<Either<AppError, dynamic>> sugnupNewUser({
+  Future<Either<AppError, dynamic>> signupNewUser({
     required String? username,
     required String? email,
     required String? prefixCode,
     required String? mobile,
     required String? password,
+  });
+
+  Future<Either<AppError, PatBasicDetails>> getPatBasicDetails();
+
+  Future<Either<AppError, dynamic>> patBasicDetails({
+    String? fname,
+    String? mname,
+    String? lname,
+    String? dob,
+    String? gender,
+    String? email,
+    String? phone,
+    String? street,
+    String? city,
+    String? state,
+    String? zipCode,
+    String? medicareNumber,
+    String? groupNumber,
+    dynamic license,
+    String? ssn,
+    String? notificationType,
+  });
+
+  Future<Either<AppError, PrivacyResponse>> getPrivacyForm();
+
+  Future<Either<AppError, ComplianceResponse>> getComplianceForm();
+
+  Future<Either<AppError, PatientAgreementResponse>> getFinancialAgreementForm();
+
+  Future<Either<AppError, SelfPaymentResponse>> getSelfPaymentForm();
+
+  Future<Either<AppError, dynamic>> privacyForm({
+    required String? firstName,
+    required String? lastName,
+    required String? date,
+    required String? userMessage,
+    required String? isPrivacyPractice,
+    required String? patientName,
+    required String? repName,
+    required String? serviceDate,
+    required String? relationship,
+  });
+
+  Future<Either<AppError, dynamic>> complianceForm({
+    required String? patientName,
+    required String? dob,
+    required dynamic patientSignature,
+    required String? patientDob,
+    required dynamic repSignature,
+    required String? repDate,
+    required String? natureWithPatient,
+  });
+
+  Future<Either<AppError, dynamic>> agreementForm({
+    required String? userName,
+    required String? patientName,
+    required String? patientSignatureDate,
+    required String? relationship,
+  });
+
+  Future<Either<AppError, dynamic>> selfPaymentForm({
+    required String? userName,
+    required String? patientName,
+    required String? patientSignatureDate,
   });
 }

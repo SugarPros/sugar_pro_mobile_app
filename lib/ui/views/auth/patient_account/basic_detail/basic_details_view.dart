@@ -1,23 +1,21 @@
 
 import 'package:sugar_pros/core/utils/exports.dart';
-import 'package:sugar_pros/ui/views/auth/patient_account/pa_otp.dart';
-import 'package:sugar_pros/ui/views/auth/patient_account/pa_page1.dart';
-import 'package:sugar_pros/ui/views/auth/patient_account/pa_page2.dart';
-import 'package:sugar_pros/ui/views/auth/patient_account/pa_page3.dart';
-import 'package:sugar_pros/ui/views/auth/patient_account/pa_page4.dart';
-import 'package:sugar_pros/ui/views/auth/patient_account/pa_page5.dart';
-import 'package:sugar_pros/ui/views/auth/patient_account/pa_page6.dart';
-import 'package:sugar_pros/ui/views/auth/patient_account/pa_page7.dart';
-import 'package:sugar_pros/ui/views/auth/patient_account/pa_page8.dart';
-import 'package:sugar_pros/ui/views/auth/patient_account/pa_page9.dart';
-import 'package:sugar_pros/ui/views/auth/patient_account/pa_personal_detail.dart';
-import 'package:sugar_pros/ui/views/auth/patient_account/patient_account_viewmodel.dart';
+import 'package:sugar_pros/ui/views/auth/patient_account/basic_detail/basic_details_viewmodel.dart';
+import 'package:sugar_pros/ui/views/auth/patient_account/basic_detail/pa_page1.dart';
+import 'package:sugar_pros/ui/views/auth/patient_account/basic_detail/pa_page2.dart';
+import 'package:sugar_pros/ui/views/auth/patient_account/basic_detail/pa_page3.dart';
+import 'package:sugar_pros/ui/views/auth/patient_account/basic_detail/pa_page4.dart';
+import 'package:sugar_pros/ui/views/auth/patient_account/basic_detail/pa_page5.dart';
+import 'package:sugar_pros/ui/views/auth/patient_account/basic_detail/pa_page6.dart';
+import 'package:sugar_pros/ui/views/auth/patient_account/basic_detail/pa_page7.dart';
+import 'package:sugar_pros/ui/views/auth/patient_account/basic_detail/pa_page8.dart';
+import 'package:sugar_pros/ui/views/auth/patient_account/basic_detail/pa_page9.dart';
 
-class PatientAccountView extends StackedView<PatientAccountViewModel> {
- const PatientAccountView({super.key});
+class BasicDetailsView extends StackedView<BasicDetailsViewModel> {
+ const BasicDetailsView({super.key});
 
  @override
- Widget builder(BuildContext context, PatientAccountViewModel viewModel, Widget? child) {
+ Widget builder(BuildContext context, BasicDetailsViewModel viewModel, Widget? child) {
     return AnnotatedRegion<SystemUiOverlayStyle>(
       value: context.isDarkMode ? Utils.darkTheme : Utils.lightTheme,
       child: PopScope(
@@ -40,8 +38,6 @@ class PatientAccountView extends StackedView<PatientAccountViewModel> {
                           viewModel.activeIndex = index;
                         },
                         children: [
-                         PaPersonalDetails(),
-                         PaOtp(),
                          PaPage1(),
                          PaPage2(),
                          PaPage3(),
@@ -65,5 +61,5 @@ class PatientAccountView extends StackedView<PatientAccountViewModel> {
  }
 
  @override
- PatientAccountViewModel viewModelBuilder(BuildContext context) => PatientAccountViewModel();
+ BasicDetailsViewModel viewModelBuilder(BuildContext context) => BasicDetailsViewModel();
 }

@@ -1,5 +1,5 @@
 import 'package:sugar_pros/core/utils/exports.dart';
-import 'package:sugar_pros/ui/views/auth/patient_account/patient_account_viewmodel.dart';
+import 'package:sugar_pros/ui/views/auth/patient_account/patient_signup/patient_signup_viewmodel.dart';
 import 'package:sugar_pros/ui/widgets/svg_icon.dart';
 
 class PaOtp extends StatelessWidget {
@@ -10,7 +10,7 @@ class PaOtp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final FocusNode node = FocusScope.of(context);
-    return BasePartialBuild<PatientAccountViewModel>(
+    return BasePartialBuild<PatientSignupViewModel>(
       builder:
           (context, viewModel) => Scaffold(
             body: SafeArea(
@@ -59,7 +59,7 @@ class PaOtp extends StatelessWidget {
                       CustomButton(
                         onTap: () {
                           node.unfocus();
-                          viewModel.forward();
+                          viewModel.navigateToBasicDetails();
                         },
                         title: 'Confirm',
                       ),

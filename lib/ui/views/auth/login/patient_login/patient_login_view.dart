@@ -76,7 +76,7 @@ class PatientLoginView extends StackedView<PatientLoginViewModel> {
                       ),
                       10.verticalSpace,
                       TextButton(
-                        onPressed: viewModel.navigateToPatientAccount,
+                        onPressed: viewModel.navigateToPatientSignup,
                         child: Center(
                           child: Text.rich(
                             TextSpan(

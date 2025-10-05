@@ -1,15 +1,16 @@
+import 'package:dotted_border/dotted_border.dart';
 import 'package:sugar_pros/core/utils/exports.dart';
-import 'package:sugar_pros/ui/views/auth/patient_account/patient_account_viewmodel.dart';
+import 'package:sugar_pros/ui/views/auth/patient_account/basic_detail/basic_details_viewmodel.dart';
 import 'package:sugar_pros/ui/widgets/svg_icon.dart';
 
-class PaPage8 extends StatelessWidget {
-  const PaPage8({super.key});
+class PaPage7 extends StatelessWidget {
+  const PaPage7({super.key});
 
   static GlobalKey<FormState> formKey = GlobalKey<FormState>();
 
   @override
   Widget build(BuildContext context) {
-    return BasePartialBuild<PatientAccountViewModel>(
+    return BasePartialBuild<BasicDetailsViewModel>(
       builder:
           (context, viewModel) => Scaffold(
             body: Column(
@@ -19,7 +20,7 @@ class PaPage8 extends StatelessWidget {
                 Padding(
                   padding: EdgeInsets.only(left: 18.w),
                   child: InkWell(
-                    onTap: () => log('ddd'),
+                    onTap: () => viewModel.backward(),
                     child: Container(
                       color: Colors.transparent,
                       padding: EdgeInsets.symmetric(vertical: 8.h),
@@ -36,26 +37,9 @@ class PaPage8 extends StatelessWidget {
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        // StepperCard(
-                        //   isActive: true,
-                        //   step: '2',
-                        //   title: 'Contact & Safety',
-                        // ),
-                        StepperCard(
-                          isActive: true,
-                          step: '3',
-                          title: 'Home Address',
-                        ),
-                        StepperCard(
-                          isActive: true,
-                          step: '4',
-                          title: 'Insurance & ID',
-                        ),
-                        StepperCard(
-                          isActive: false,
-                          step: '5',
-                          title: 'Communication',
-                        ),
+                        StepperCard(isActive: true, step: '3', title: 'Home Address'),
+                        StepperCard(isActive: true, step: '4', title: 'Insurance & ID'),
+                        StepperCard(isActive: false, step: '5', title: 'Communication'),
                       ],
                     ),
                   ),
@@ -75,7 +59,7 @@ class PaPage8 extends StatelessWidget {
                           ),
                         ),
                         Text(
-                          'Lastly, we might need your Social Security Number for insurance claims. Is that okay?',
+                          'To verify your identity, could you take a picture of your driver’s license or state ID?',
                           textAlign: TextAlign.center,
                           style: BrandTextStyles.medium.copyWith(
                             fontSize: 19.sp,
@@ -83,9 +67,62 @@ class PaPage8 extends StatelessWidget {
                           ),
                         ),
                         30.verticalSpace,
-                        CustomTextField(
-                          label: 'SSN',
-                          hintText: 'Type here',
+                        InkWell(
+                          onTap: () {
+                            selectImageFileSource(
+                              context: context,
+                              func: (val) => viewModel.uploadLicense(val),
+                            );
+                          },
+                          child: DottedBorder(
+                            borderType: BorderType.RRect,
+                            radius: Radius.circular(8.r),
+                            strokeWidth: 2,
+                            color: hexColor('#BDBDBD'),
+                            dashPattern: [5],
+                            child: Container(
+                              width: double.infinity,
+                              padding: EdgeInsets.symmetric(vertical: 18.h),
+                              decoration: ShapeDecoration(
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(8.r),
+                                ),
+                              ),
+                              child: Column(
+                                children: [
+                                  if (viewModel.licenseFile != null)
+                                    Image.file(
+                                      File(viewModel.licenseFile?.path ?? ''),
+                                      width: double.infinity,
+                                      height: 100.h,
+                                      fit: BoxFit.cover,
+                                    )
+                                  else
+                                    Column(
+                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      children: [
+                                        Image.asset('upload'.png, height: 50.h),
+                                        15.verticalSpace,
+                                        Text(
+                                          'Upload your picture here',
+                                          style: BrandTextStyles.medium.copyWith(
+                                            fontSize: 14.sp,
+                                            color: Colors.black,
+                                          ),
+                                        ),
+                                        Text(
+                                          'Don’t worry—this is stored securely!',
+                                          style: BrandTextStyles.regular.copyWith(
+                                            fontSize: 14.sp,
+                                            color: hexColor('#616161'),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                ],
+                              ),
+                            ),
+                          ),
                         ),
                         20.verticalSpace,
                       ],
@@ -98,7 +135,7 @@ class PaPage8 extends StatelessWidget {
                     children: [
                       Expanded(
                         child: CustomButton(
-                          onTap: () {},
+                          onTap: viewModel.cancel,
                           title: 'Cancel',
                           backgroundColor: hexColor('#E5E7EB'),
                           textColor: hexColor('#4A5565'),
@@ -107,6 +144,7 @@ class PaPage8 extends StatelessWidget {
                       15.horizontalSpace,
                       Expanded(
                         child: CustomButton(
+                          disable: viewModel.licenseFile == null,
                           onTap: () {
                             viewModel.forward();
                           },
@@ -125,12 +163,7 @@ class PaPage8 extends StatelessWidget {
 }
 
 class StepperCard extends StatelessWidget {
-  const StepperCard({
-    super.key,
-    required this.step,
-    required this.title,
-    required this.isActive,
-  });
+  const StepperCard({super.key, required this.step, required this.title, required this.isActive});
 
   final String step;
   final String title;
@@ -146,9 +179,7 @@ class StepperCard extends StatelessWidget {
           decoration: ShapeDecoration(
             color: isActive ? hexColor('#FF6400') : Colors.transparent,
             shape: CircleBorder(
-              side: BorderSide(
-                color: isActive ? hexColor('#FF6400') : hexColor('#A1A1A1'),
-              ),
+              side: BorderSide(color: isActive ? hexColor('#FF6400') : hexColor('#A1A1A1')),
             ),
           ),
           child: Center(

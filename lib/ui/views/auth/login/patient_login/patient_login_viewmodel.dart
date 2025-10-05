@@ -83,22 +83,8 @@ class PatientLoginViewModel extends BaseViewModel {
           User(token: r.accessToken, loginUsername: email ?? user?.loginUsername),
         );
         _userService.getUser();
-        await Future.wait([fetchPatientDetails(), getPatientAccount()]);
-      },
-    );
-  }
-
-  Future fetchPatientDetails() async {
-    final data = await _authRemoteDataSource.patBasicDetails();
-
-    data.fold(
-      (l) async {
-        _dialogService.completeDialog(DialogResponse());
-        flusher(l.message, color: Colors.red);
-      },
-      (r) async {
-        _authService.patBasicData = r.data;
-        fetchDashboard();
+        await Future.wait([getPatientAccount(), fetchDashboard()]);
+        fetchPatientBasicDetails();
       },
     );
   }
@@ -108,19 +94,132 @@ class PatientLoginViewModel extends BaseViewModel {
 
     data.fold(
       (l) async {
-        _dialogService.completeDialog(DialogResponse());
         flusher(l.message, color: Colors.red);
       },
       (r) async {
-        _dialogService.completeDialog(DialogResponse());
         _authService.patDashboardData = r;
-        navigateToPatientDashboard();
       },
     );
   }
 
-  void navigateToPatientAccount() {
-    _navigationService.navigateTo(Routes.patientAccount);
+  Future fetchPatientBasicDetails() async {
+    setBusy(true);
+    final data = await _authRemoteDataSource.getPatBasicDetails();
+
+    data.fold(
+      (l) async {
+        flusher(l.message, color: Colors.red);
+      },
+      (r) async {
+        _authService.patBasicData = r.data;
+        if (r.data == null) {
+          setBusy(false);
+          navigateToBasicDetailsFrom();
+        } else {
+          fetchPrivacyForm();
+        }
+      },
+    );
+  }
+
+  Future fetchPrivacyForm() async {
+    final data = await _authRemoteDataSource.getPrivacyForm();
+
+    data.fold(
+      (l) async {
+        flusher(l.message, color: Colors.red);
+      },
+      (r) async {
+        _authService.privacy = r.privacy;
+        if (r.privacy == null || (r.privacy?.isEmpty ?? false)) {
+          setBusy(false);
+          navigateToPrivacyFrom();
+        } else {
+          fetchComplianceForm();
+        }
+      },
+    );
+  }
+
+  Future fetchComplianceForm() async {
+    final data = await _authRemoteDataSource.getComplianceForm();
+
+    data.fold(
+      (l) async {
+        flusher(l.message, color: Colors.red);
+      },
+      (r) async {
+        _authService.compliance = r.complaince;
+        if (r.complaince == null || (r.complaince?.isEmpty ?? false)) {
+          setBusy(false);
+          navigateToComplianceFrom();
+        } else {
+          fetchAggrementForm();
+        }
+      },
+    );
+  }
+
+  Future fetchAggrementForm() async {
+    final data = await _authRemoteDataSource.getFinancialAgreementForm();
+
+    data.fold(
+      (l) async {
+        flusher(l.message, color: Colors.red);
+      },
+      (r) async {
+        _authService.patientAgreement = r.patientAgreement;
+        if (r.patientAgreement == null || (r.patientAgreement?.isEmpty ?? false)) {
+          setBusy(false);
+          navigateToAgreementFrom();
+        } else {
+          fetchSelfPaymentForm();
+        }
+      },
+    );
+  }
+
+  Future fetchSelfPaymentForm() async {
+    final data = await _authRemoteDataSource.getSelfPaymentForm();
+
+    data.fold(
+      (l) async {
+        flusher(l.message, color: Colors.red);
+      },
+      (r) async {
+        setBusy(false);
+        _authService.selfPayment = r.selfPayment;
+        if (r.selfPayment == null || (r.selfPayment?.isEmpty ?? false)) {
+          navigateToSelfPayementForm();
+        } else {
+          _navigationService.clearStackAndShow(Routes.patientDashboard);
+        }
+      },
+    );
+  }
+
+  void navigateToBasicDetailsFrom() {
+    _navigationService.clearStackAndShow(Routes.basicDetails);
+  }
+
+  void navigateToPrivacyFrom() {
+    _navigationService.clearStackAndShow(Routes.privacyFrom);
+  }
+
+  void navigateToComplianceFrom() {
+    _navigationService.clearStackAndShow(Routes.complianceFrom);
+  }
+
+  void navigateToAgreementFrom() {
+    _navigationService.clearStackAndShow(Routes.patentAgreementForm);
+  }
+
+  void navigateToSelfPayementForm() {
+    _navigationService.clearStackAndShow(Routes.selfPaymentForm);
+  }
+
+  void navigateToPatientSignup() {
+    _navigationService.navigateTo(Routes.patientSignup);
   }
 
   void navigateToProviderDashboard() {

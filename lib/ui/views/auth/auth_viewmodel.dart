@@ -21,7 +21,7 @@ class AuthViewModel extends BaseViewModel {
 
   void navigateToPatientRegister() {
     if (user == null) {
-      _navigationService.navigateTo(Routes.patientAccount);
+      _navigationService.navigateTo(Routes.patientSignup);
     } else {
        _navigationService.navigateTo(Routes.patientLogin);
     }

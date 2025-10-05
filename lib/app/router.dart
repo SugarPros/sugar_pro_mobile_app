@@ -10,8 +10,12 @@ import 'package:flutter/cupertino.dart';
 import 'package:sugar_pros/ui/views/auth/auth_view.dart';
 import 'package:sugar_pros/ui/views/auth/login/patient_login/patient_login_view.dart';
 import 'package:sugar_pros/ui/views/auth/login/provider_login/provider_login_view.dart';
-import 'package:sugar_pros/ui/views/auth/patient_account/forms_agreement/forms_agreement_view.dart';
-import 'package:sugar_pros/ui/views/auth/patient_account/patient_account_view.dart';
+import 'package:sugar_pros/ui/views/auth/patient_account/basic_detail/basic_details_view.dart';
+import 'package:sugar_pros/ui/views/auth/patient_account/forms_agreement/compliance_form/compliance_form_view.dart';
+import 'package:sugar_pros/ui/views/auth/patient_account/forms_agreement/patient_agreement_form/patient_agreement_form_view.dart';
+import 'package:sugar_pros/ui/views/auth/patient_account/forms_agreement/privacy_form/privacy_form_view.dart';
+import 'package:sugar_pros/ui/views/auth/patient_account/forms_agreement/self_payment_form/self_payment_form_view.dart';
+import 'package:sugar_pros/ui/views/auth/patient_account/patient_signup/patient_signup_view.dart';
 import 'package:sugar_pros/ui/views/auth/provider_account/provider_account_view.dart';
 import 'package:sugar_pros/ui/views/dashboard_patient/appointment/book_appointment/book_appointment_view.dart';
 import 'package:sugar_pros/ui/views/dashboard_patient/appointment/patient_appointment_details/pat_apointment_detail_view.dart';
@@ -40,7 +44,8 @@ abstract class Routes {
   static const splash = '/splash';
   static const onboarding = '/onboarding';
   static const auth = '/auth';
-  static const patientAccount = '/patientAccount';
+  static const patientSignup = '/patientSignup';
+  static const basicDetails = '/basicDetails';
   static const patientLogin = '/patientLogin';
   static const providerAccount = '/providerAccount';
   static const formsAgreement = '/formsAgreement';
@@ -66,6 +71,10 @@ abstract class Routes {
   static const changePassword = '/changePassword';
   static const changeEmail = '/changeEmail';
   static const notifcations = '/notifcations';
+  static const privacyFrom = '/privacyFrom';
+  static const complianceFrom = '/complianceFrom';
+  static const patentAgreementForm = '/patentForm';
+  static const selfPaymentForm = '/selfPaymentForm';
 }
 
 class Routers {
@@ -86,9 +95,14 @@ class Routers {
           builder: (context) => const AuthView(),
           settings: settings,
         );
-      case Routes.patientAccount:
+      case Routes.patientSignup:
         return CupertinoPageRoute<dynamic>(
-          builder: (context) => const PatientAccountView(),
+          builder: (context) => const PatientSignupView(),
+          settings: settings,
+        );
+      case Routes.basicDetails:
+        return CupertinoPageRoute<dynamic>(
+          builder: (context) => const BasicDetailsView(),
           settings: settings,
         );
       case Routes.providerAccount:
@@ -99,11 +113,6 @@ class Routers {
       case Routes.providerLogin:
         return CupertinoPageRoute<dynamic>(
           builder: (context) => const ProviderLoginView(),
-          settings: settings,
-        );
-      case Routes.formsAgreement:
-        return CupertinoPageRoute<dynamic>(
-          builder: (context) => const FormsAgreementView(),
           settings: settings,
         );
       case Routes.patientDashboard:
@@ -225,6 +234,26 @@ class Routers {
       case Routes.notifcations:
         return CupertinoPageRoute<dynamic>(
           builder: (context) => const NotificationView(),
+          settings: settings,
+        );
+      case Routes.privacyFrom:
+        return CupertinoPageRoute<dynamic>(
+          builder: (context) => const PrivacyForm(),
+          settings: settings,
+        );
+      case Routes.complianceFrom:
+        return CupertinoPageRoute<dynamic>(
+          builder: (context) => const ComplianceForm(),
+          settings: settings,
+        );
+      case Routes.patentAgreementForm:
+        return CupertinoPageRoute<dynamic>(
+          builder: (context) => const PatientAgreementFormView(),
+          settings: settings,
+        );
+      case Routes.selfPaymentForm:
+        return CupertinoPageRoute<dynamic>(
+          builder: (context) => const SelfPaymentFormView(),
           settings: settings,
         );
       default:

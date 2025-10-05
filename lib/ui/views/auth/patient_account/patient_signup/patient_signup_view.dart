@@ -1,17 +1,15 @@
 
 import 'package:sugar_pros/core/utils/exports.dart';
-import 'package:sugar_pros/ui/views/auth/patient_account/forms_agreement/compliance_form.dart';
-import 'package:sugar_pros/ui/views/auth/patient_account/forms_agreement/forms_agreement_viewmodel.dart';
-import 'package:sugar_pros/ui/views/auth/patient_account/forms_agreement/patient_agreement_form1.dart';
-import 'package:sugar_pros/ui/views/auth/patient_account/forms_agreement/patient_agreement_form2.dart';
-import 'package:sugar_pros/ui/views/auth/patient_account/forms_agreement/privacy_form.dart';
+import 'package:sugar_pros/ui/views/auth/patient_account/patient_signup/pa_otp.dart';
+import 'package:sugar_pros/ui/views/auth/patient_account/patient_signup/pa_personal_detail.dart';
+import 'package:sugar_pros/ui/views/auth/patient_account/patient_signup/patient_signup_viewmodel.dart';
 
-class FormsAgreementView extends StackedView<FormsAgreementViewModel> {
- const FormsAgreementView({super.key});
+class PatientSignupView extends StackedView<PatientSignupViewModel> {
+ const PatientSignupView({super.key});
 
  @override
- Widget builder(BuildContext context, FormsAgreementViewModel viewModel, Widget? child) {
-   return AnnotatedRegion<SystemUiOverlayStyle>(
+ Widget builder(BuildContext context, PatientSignupViewModel viewModel, Widget? child) {
+    return AnnotatedRegion<SystemUiOverlayStyle>(
       value: context.isDarkMode ? Utils.darkTheme : Utils.lightTheme,
       child: PopScope(
         canPop: false,
@@ -33,10 +31,8 @@ class FormsAgreementView extends StackedView<FormsAgreementViewModel> {
                           viewModel.activeIndex = index;
                         },
                         children: [
-                         PrivacyForm(),
-                         ComplianceForm(),
-                         PatientAgreementForm1(),
-                         PatientAgreementForm2(),
+                         PaPersonalDetails(),
+                         PaOtp(),
                         ],
                       ),
                     ),
@@ -51,5 +47,5 @@ class FormsAgreementView extends StackedView<FormsAgreementViewModel> {
  }
 
  @override
- FormsAgreementViewModel viewModelBuilder(BuildContext context) => FormsAgreementViewModel();
+ PatientSignupViewModel viewModelBuilder(BuildContext context) => PatientSignupViewModel();
 }
