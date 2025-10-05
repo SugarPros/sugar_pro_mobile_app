@@ -153,6 +153,17 @@ extension AssetName on String {
       return '${match.group(1)} ${match.group(2)}';
     });
   }
+
+  String get asImageUrl {
+    const String baseUrl = "http://31.97.14.107:8080/";
+    if (startsWith("http")) return this; // already a full URL
+    return "$baseUrl$this";
+  }
+
+  String stripAmPm() {
+    final regex = RegExp(r'\s*[ap]\.?m\.?', caseSensitive: false);
+    return replaceAll(regex, '').trim();
+  }
 }
 
 extension MetersToKilometers on double {

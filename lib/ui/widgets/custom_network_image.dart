@@ -10,6 +10,7 @@ class CustomNetworkImage extends StatelessWidget {
     this.borderRadius,
     this.imageUrl,
     this.errorImage,
+    this.fit,
   });
 
   final double? height;
@@ -17,6 +18,7 @@ class CustomNetworkImage extends StatelessWidget {
   final String? imageUrl;
   final double? borderRadius;
   final Widget? errorImage;
+  final BoxFit? fit;
 
   @override
   Widget build(BuildContext context) {
@@ -24,39 +26,35 @@ class CustomNetworkImage extends StatelessWidget {
       height: height,
       width: width,
       imageUrl: imageUrl ?? 'https://fakeimg.pl/600x400',
-      fit: BoxFit.cover,
-      imageBuilder: (context, imageProvider) => Container(
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(borderRadius ?? 12.r),
-          image: DecorationImage(
-              image: imageProvider,
-              fit: BoxFit.cover,
-              colorFilter:
-                  const ColorFilter.mode(Colors.grey, BlendMode.colorBurn)),
-        ),
-      ),
-      placeholder: (context, url) => Shimmer.fromColors(
-        baseColor: Colors.grey[350]!,
-        highlightColor: Colors.grey[100]!,
-        child: Container(
-          width: width,
-          height: height,
-          decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.circular(12.r),
+      imageBuilder:
+          (context, imageProvider) => Container(
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(borderRadius ?? 12.r),
+              image: DecorationImage(
+                image: imageProvider,
+                fit: fit ?? BoxFit.cover,
+                colorFilter: const ColorFilter.mode(Colors.grey, BlendMode.colorBurn),
+              ),
+            ),
           ),
-        ),
-      ),
-      errorWidget: (context, url, error) =>
-          CircleAvatar(
+      placeholder:
+          (context, url) => Shimmer.fromColors(
+            baseColor: Colors.grey[350]!,
+            highlightColor: Colors.grey[100]!,
+            child: Container(
+              width: width,
+              height: height,
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(12.r),
+              ),
+            ),
+          ),
+      errorWidget:
+          (context, url, error) => CircleAvatar(
             backgroundColor: BrandColors.primary,
             radius: 40.r,
-            child: errorImage ??
-            Icon(
-              Icons.person,
-              size: 30.h,
-              color: Colors.white,
-            ),
+            child: errorImage ?? Icon(Icons.person, size: 30.h, color: Colors.white),
           ),
     );
   }

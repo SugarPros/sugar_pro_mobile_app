@@ -1,223 +1,190 @@
 import 'package:fl_chart/fl_chart.dart';
 import 'package:sugar_pros/core/utils/exports.dart';
-import 'package:sugar_pros/ui/views/dashboard_patient/results/dexcom/dexcom_viewmodel.dart';
+import 'package:sugar_pros/ui/views/dashboard_patient/patient_data/patient_dexcom/patient_dexcom_viewmodel.dart';
 import 'package:sugar_pros/ui/widgets/svg_icon.dart';
 
-class DexcomView extends StackedView<DexcomViewModel> {
-  const DexcomView({super.key});
+class PatientDexcomView extends StackedView<PatientDexcomViewModel> {
+  const PatientDexcomView({super.key});
 
   @override
-  void onViewModelReady(DexcomViewModel viewModel) {
+  void onViewModelReady(PatientDexcomViewModel viewModel) {
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      viewModel.dexcom();
+      viewModel.connectDexcom();
     });
   }
 
   @override
-  Widget builder(BuildContext context, DexcomViewModel viewModel, Widget? child) {
+  Widget builder(BuildContext context, PatientDexcomViewModel viewModel, Widget? child) {
     return Scaffold(
       backgroundColor: hexColor('#F3F4F6'),
-      body: SafeArea(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            20.verticalSpace,
-            Padding(
-              padding: EdgeInsets.only(left: 18.w),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  GestureDetector(
-                    onTap: () => locator<NavigationService>().back(),
-                    child: Image.asset('back'.png, height: 46.h),
-                  ),
-                  Text(
-                    'Dexcom/Libre',
-                    style: BrandTextStyles.medium.copyWith(
-                      fontSize: 18.sp,
-                      color: hexColor('#121212'),
-                    ),
-                  ),
-                  SizedBox(width: 46.w, height: 46.w),
-                ],
-              ),
-            ),
-            10.verticalSpace,
-            Expanded(
-              child: SingleChildScrollView(
-                child: Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 18.w),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      10.verticalSpace,
-                      Container(
-                        width: double.infinity,
-                        padding: EdgeInsets.symmetric(vertical: 32.h, horizontal: 44.w),
-                        decoration: ShapeDecoration(
-                          color: Colors.white,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadiusGeometry.circular(16.r),
+      body: SingleChildScrollView(
+        child: Padding(
+          padding: EdgeInsets.symmetric(horizontal: 18.w),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              20.verticalSpace,
+              Container(
+                width: double.infinity,
+                padding: EdgeInsets.symmetric(vertical: 32.h, horizontal: 44.w),
+                decoration: ShapeDecoration(
+                  color: Colors.white,
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadiusGeometry.circular(16.r)),
+                ),
+                child: Column(
+                  children: [
+                    Container(
+                      width: 233.w,
+                      height: 219.h,
+                      padding: EdgeInsets.all(20.w),
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black.withValues(alpha: 0.13),
+                            offset: Offset(0, 3.88),
+                            blurRadius: 46.54,
+                            spreadRadius: 0,
                           ),
+                        ],
+                        borderRadius: BorderRadius.only(
+                          topLeft: Radius.circular(25.76.r),
+                          topRight: Radius.circular(175.63.r),
+                          bottomLeft: Radius.circular(175.63.r),
+                          bottomRight: Radius.circular(175.63.r),
+                        ),
+                      ),
+                      child: Container(
+                        width: 183.w,
+                        height: 183.w,
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.black.withValues(alpha: 0.07),
+                              offset: Offset(0, 3.88),
+                              blurRadius: 46.54,
+                              spreadRadius: 0,
+                            ),
+                          ],
+                          borderRadius: BorderRadius.circular(100.r),
                         ),
                         child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            Container(
-                              width: 233.w,
-                              height: 219.h,
-                              padding: EdgeInsets.all(20.w),
-                              decoration: BoxDecoration(
-                                color: Colors.white,
-                                boxShadow: [
-                                  BoxShadow(
-                                    color: Colors.black.withValues(alpha: 0.13),
-                                    offset: Offset(0, 3.88),
-                                    blurRadius: 46.54,
-                                    spreadRadius: 0,
-                                  ),
-                                ],
-                                borderRadius: BorderRadius.only(
-                                  topLeft: Radius.circular(25.76.r),
-                                  topRight: Radius.circular(175.63.r),
-                                  bottomLeft: Radius.circular(175.63.r),
-                                  bottomRight: Radius.circular(175.63.r),
-                                ),
-                              ),
-                              child: Container(
-                                width: 183.w,
-                                height: 183.w,
-                                decoration: BoxDecoration(
-                                  color: Colors.white,
-                                  boxShadow: [
-                                    BoxShadow(
-                                      color: Colors.black.withValues(alpha: 0.07),
-                                      offset: Offset(0, 3.88),
-                                      blurRadius: 46.54,
-                                      spreadRadius: 0,
-                                    ),
-                                  ],
-                                  borderRadius: BorderRadius.circular(100.r),
-                                ),
-                                child: Column(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    Text(
-                                      '6.1',
-                                      style: BrandTextStyles.bold.copyWith(
-                                        color: Colors.black,
-                                        fontSize: 45.sp,
-                                      ),
-                                    ),
-                                    Text(
-                                      'mmol/L',
-                                      style: BrandTextStyles.regular.copyWith(
-                                        color: Colors.black,
-                                        fontSize: 15.sp,
-                                      ),
-                                    ),
-                                  ],
-                                ),
+                            Text(
+                              '6.1',
+                              style: BrandTextStyles.bold.copyWith(
+                                color: Colors.black,
+                                fontSize: 45.sp,
                               ),
                             ),
-                            25.verticalSpace,
                             Text(
-                              'Manage Your Glucose Reading',
-                              style: BrandTextStyles.medium.copyWith(
-                                color: hexColor('#141414'),
-                                fontSize: 16.sp,
+                              'mmol/L',
+                              style: BrandTextStyles.regular.copyWith(
+                                color: Colors.black,
+                                fontSize: 15.sp,
                               ),
                             ),
                           ],
                         ),
                       ),
-                      15.verticalSpace,
-                      GlucoseChart(),
-                      15.verticalSpace,
-                      ConnectionDetailsCard(
-                        title: "Connections",
-                        connectionName: "Dexcom",
-                        status: "Connected",
-                        statusColor: Colors.red,
-                        details: {
-                          "Last sync": "April 25, 2025",
-                          "Time": "10:42 AM",
-                          "Battery Level": "Low",
-                          "Sensor Start Date": "April 25, 2025",
-                          "Sensor End Date": "April 25, 2025",
-                        },
+                    ),
+                    25.verticalSpace,
+                    Text(
+                      'Manage Your Glucose Reading',
+                      style: BrandTextStyles.medium.copyWith(
+                        color: hexColor('#141414'),
+                        fontSize: 16.sp,
                       ),
-                      20.verticalSpace,
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Text(
-                                'History',
-                                style: BrandTextStyles.semiBold.copyWith(
-                                  color: Colors.black,
-                                  fontSize: 18.sp,
-                                ),
-                              ),
-                              Text(
-                                'See all',
-                                style: BrandTextStyles.semiBold.copyWith(
-                                  color: hexColor('#2889AA'),
-                                  fontSize: 16.sp,
-                                ),
-                              ),
-                            ],
-                          ),
-                          10.verticalSpace,
-                          CustomTextField(
-                            fillColor: Colors.white,
-                            border: false,
-                            borderColor: Colors.transparent,
-                            radius: 100.r,
-                            hintText: 'Search Something...',
-                            prefixIcon: Padding(
-                              padding: EdgeInsets.only(left: 15.w, right: 10.w),
-                              child: SvgIcon('search'.svg),
-                            ),
-                            suffixIcon: Padding(
-                              padding: EdgeInsets.all(8.w),
-                              child: Image.asset('filter2'.png, height: 40.h),
-                            ),
-                          ),
-                          20.verticalSpace,
-                          ListView.separated(
-                            padding: EdgeInsets.zero,
-                            shrinkWrap: true,
-                            physics: NeverScrollableScrollPhysics(),
-                            itemCount: 5,
-                            separatorBuilder: (ctx, i) => 15.verticalSpace,
-                            itemBuilder: (ctx, i) {
-                              return HistoryList(
-                                patientName: 'Willian John',
-                                status: 'Rising',
-                                startDate: '02 July, 2024',
-                                endDate: '02 July, 2024',
-                                glucoseLevel: '110 mg',
-                              );
-                            },
-                          ),
-                        ],
-                      ),
-                      SizedBox(height: bottomPadding(context) + 20.h),
-                    ],
-                  ),
+                    ),
+                  ],
                 ),
               ),
-            ),
-          ],
+              15.verticalSpace,
+              GlucoseChart(),
+              15.verticalSpace,
+              ConnectionDetailsCard(
+                title: "Connections",
+                connectionName: "Dexcom",
+                status: "Connected",
+                statusColor: Colors.red,
+                details: {
+                  "Last sync": "April 25, 2025",
+                  "Time": "10:42 AM",
+                  "Battery Level": "Low",
+                  "Sensor Start Date": "April 25, 2025",
+                  "Sensor End Date": "April 25, 2025",
+                },
+              ),
+              20.verticalSpace,
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        'History',
+                        style: BrandTextStyles.semiBold.copyWith(
+                          color: Colors.black,
+                          fontSize: 18.sp,
+                        ),
+                      ),
+                      Text(
+                        'See all',
+                        style: BrandTextStyles.semiBold.copyWith(
+                          color: hexColor('#2889AA'),
+                          fontSize: 16.sp,
+                        ),
+                      ),
+                    ],
+                  ),
+                  10.verticalSpace,
+                  CustomTextField(
+                    fillColor: Colors.white,
+                    border: false,
+                    borderColor: Colors.transparent,
+                    radius: 100.r,
+                    hintText: 'Search Something...',
+                    prefixIcon: Padding(
+                      padding: EdgeInsets.only(left: 15.w, right: 10.w),
+                      child: SvgIcon('search'.svg),
+                    ),
+                    suffixIcon: Padding(
+                      padding: EdgeInsets.all(8.w),
+                      child: Image.asset('filter2'.png, height: 40.h),
+                    ),
+                  ),
+                  20.verticalSpace,
+                  ListView.separated(
+                    padding: EdgeInsets.zero,
+                    shrinkWrap: true,
+                    physics: NeverScrollableScrollPhysics(),
+                    itemCount: 5,
+                    separatorBuilder: (ctx, i) => 15.verticalSpace,
+                    itemBuilder: (ctx, i) {
+                      return HistoryList(
+                        patientName: 'Willian John',
+                        status: 'Rising',
+                        startDate: '02 July, 2024',
+                        endDate: '02 July, 2024',
+                        glucoseLevel: '110 mg',
+                      );
+                    },
+                  ),
+                ],
+              ),
+              SizedBox(height: bottomPadding(context) + 20.h),
+            ],
+          ),
         ),
       ),
     );
   }
 
   @override
-  DexcomViewModel viewModelBuilder(BuildContext context) => DexcomViewModel();
+  PatientDexcomViewModel viewModelBuilder(BuildContext context) => PatientDexcomViewModel();
 }
 
 class HistoryList extends StatelessWidget {

@@ -1,5 +1,6 @@
 import 'package:sugar_pros/core/utils/exports.dart';
 import 'package:sugar_pros/ui/views/auth/patient_account/patient_account_viewmodel.dart';
+import 'package:sugar_pros/ui/widgets/svg_icon.dart';
 
 class PaOtp extends StatelessWidget {
   const PaOtp({super.key});
@@ -20,6 +21,23 @@ class PaOtp extends StatelessWidget {
                     children: [
                       20.verticalSpace,
                       Center(child: Image.asset('logo'.png, height: 36.h)),
+                      Align(
+                        alignment: Alignment.centerLeft,
+                        child: InkWell(
+                          onTap: () => locator<NavigationService>().back(),
+                          child: Container(
+                            padding: EdgeInsets.all(12.w),
+                            decoration: ShapeDecoration(
+                              color: hexColor('#F1F5F9'),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(10.r),
+                                side: BorderSide(color: hexColor('#E2E8F0'), width: 1),
+                              ),
+                            ),
+                            child: SvgIcon('back'.svg),
+                          ),
+                        ),
+                      ),
                       150.verticalSpace,
                       Text(
                         'Verify Your Email Address',
@@ -36,10 +54,7 @@ class PaOtp extends StatelessWidget {
                         ),
                       ),
                       30.verticalSpace,
-                      CustomTextField(
-                        label: 'OTP Code',
-                        hintText: 'Enter code here',
-                      ),
+                      CustomTextField(label: 'OTP Code', hintText: 'Enter code here'),
                       40.verticalSpace,
                       CustomButton(
                         onTap: () {

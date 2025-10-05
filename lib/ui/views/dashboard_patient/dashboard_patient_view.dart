@@ -2,7 +2,7 @@
 
 import 'package:sugar_pros/core/utils/exports.dart';
 import 'package:sugar_pros/ui/views/dashboard_patient/patient_chat_history/patient_chat_history_view.dart';
-import 'package:sugar_pros/ui/views/dashboard_patient/results/results_view.dart';
+import 'package:sugar_pros/ui/views/dashboard_patient/patient_data/patient_data_view.dart';
 import 'package:sugar_pros/ui/views/dashboard_patient/dashboard_patient_viewmodel.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:sugar_pros/ui/views/dashboard_patient/home/patient_home_view.dart';
@@ -40,7 +40,7 @@ class DashboardPatientView extends StatelessWidget {
                       const PatientHomeView(),
                       const PatientChatHistoryView(),
                       const PatientAppointmentView(),
-                      const PatientResultsView(),
+                      const PatientDataView(),
                       const PatientProfileView(),
                     ].elementAt(viewModel.currentIndex),
                     bottomNavigationBar: Container(

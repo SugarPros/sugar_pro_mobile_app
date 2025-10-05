@@ -19,8 +19,13 @@ import 'package:sugar_pros/ui/views/dashboard_patient/dashboard_patient_view.dar
 import 'package:sugar_pros/ui/views/dashboard_patient/patient_chat_history/patient_chat/pa_ai_chat/pa_ai_chat_view.dart';
 import 'package:sugar_pros/ui/views/dashboard_patient/patient_chat_history/patient_chat/pa_ai_chat_history/pa_ai_chat_history_view.dart';
 import 'package:sugar_pros/ui/views/dashboard_patient/patient_chat_history/patient_chat/patient_chats_view.dart';
-import 'package:sugar_pros/ui/views/dashboard_patient/results/dexcom/dexcom_view.dart';
-import 'package:sugar_pros/ui/views/dashboard_patient/results/nutrition_tracker/nutrition_tracker_view.dart';
+import 'package:sugar_pros/ui/views/dashboard_patient/patient_data/patient_dexcom/patient_dexcom_view.dart';
+import 'package:sugar_pros/ui/views/dashboard_patient/patient_data/patient_nutrition_tracker/patient_nutrition_tracker_view.dart';
+import 'package:sugar_pros/ui/views/dashboard_patient/profile/notification/notification_view.dart';
+import 'package:sugar_pros/ui/views/dashboard_patient/profile/patient_settings/change_email/change_email_view.dart';
+import 'package:sugar_pros/ui/views/dashboard_patient/profile/patient_settings/change_password/change_password_view.dart';
+import 'package:sugar_pros/ui/views/dashboard_patient/profile/patient_settings/patient_settings_view.dart';
+import 'package:sugar_pros/ui/views/dashboard_patient/profile/profile_patient_account/patient_profile_account_view.dart';
 import 'package:sugar_pros/ui/views/dashboard_provider/dashboard_provider_view.dart';
 import 'package:sugar_pros/ui/views/dashboard_provider/provider_appointment/provider_appointment_details/pd_apointment_detail_view.dart';
 import 'package:sugar_pros/ui/views/dashboard_provider/provider_chat_history/provider_chats/pd_ai_chat/pd_ai_chat_view.dart';
@@ -56,6 +61,11 @@ abstract class Routes {
   static const dexcom = '/dexcom';
   static const nutritionTracker = '/nutritionTrancer';
   static const bookAppointment = '/bookAppointment';
+  static const patientAccountDetails = '/patientAccountDetails';
+  static const patientSettings = '/patientSettings';
+  static const changePassword = '/changePassword';
+  static const changeEmail = '/changeEmail';
+  static const notifcations = '/notifcations';
 }
 
 class Routers {
@@ -179,17 +189,42 @@ class Routers {
         );
       case Routes.dexcom:
         return CupertinoPageRoute<dynamic>(
-          builder: (context) => const DexcomView(),
+          builder: (context) => const PatientDexcomView(),
           settings: settings,
         );
       case Routes.nutritionTracker:
         return CupertinoPageRoute<dynamic>(
-          builder: (context) => const NutritionTrackerView(),
+          builder: (context) => const PatientNutritionTrackerView(),
           settings: settings,
         );
       case Routes.bookAppointment:
         return CupertinoPageRoute<dynamic>(
           builder: (context) => const BookAppointmentView(),
+          settings: settings,
+        );
+      case Routes.patientAccountDetails:
+        return CupertinoPageRoute<dynamic>(
+          builder: (context) => const PatientProfileAccountView(),
+          settings: settings,
+        );
+      case Routes.patientSettings:
+        return CupertinoPageRoute<dynamic>(
+          builder: (context) => const PatientSettingsView(),
+          settings: settings,
+        );
+      case Routes.changePassword:
+        return CupertinoPageRoute<dynamic>(
+          builder: (context) => const ChangePasswordView(),
+          settings: settings,
+        );
+      case Routes.changeEmail:
+        return CupertinoPageRoute<dynamic>(
+          builder: (context) => const ChangeEmailView(),
+          settings: settings,
+        );
+      case Routes.notifcations:
+        return CupertinoPageRoute<dynamic>(
+          builder: (context) => const NotificationView(),
           settings: settings,
         );
       default:

@@ -2,6 +2,8 @@ import 'package:sugar_pros/core/models/chat_list_response.dart';
 import 'package:sugar_pros/core/models/nutrition_tracker_response.dart';
 import 'package:sugar_pros/core/models/pat_appointment_respons.dart';
 import 'package:sugar_pros/core/models/patient_ai_chatlist_response.dart';
+import 'package:sugar_pros/core/models/patient_notification_response.dart';
+import 'package:sugar_pros/core/models/quest_lab_response.dart';
 import 'package:sugar_pros/core/models/related_chat_repsonse.dart';
 import 'package:sugar_pros/core/utils/exports.dart';
 
@@ -17,6 +19,8 @@ class PatientService with ListenableServiceMixin {
       _patientAIChatList,
       _aiChatMessages,
       _foods,
+      _questLab,
+      _patientNotifications
     ]);
   }
 
@@ -24,6 +28,20 @@ class PatientService with ListenableServiceMixin {
   List<PatientAppointments>? get patientAppointments => _patientAppointments;
   set patientAppointments(List<PatientAppointments>? val) {
     _patientAppointments = val;
+    notifyListeners();
+  }
+
+  List<PatNotifications>? _patientNotifications;
+  List<PatNotifications>? get patientNotifications => _patientNotifications;
+  set patientNotifications(List<PatNotifications>? val) {
+    _patientNotifications = val;
+    notifyListeners();
+  }
+
+  List<QuestLab>? _questLab;
+  List<QuestLab>? get questLab => _questLab;
+  set questLab(List<QuestLab>? val) {
+    _questLab = val;
     notifyListeners();
   }
 

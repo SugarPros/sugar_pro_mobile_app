@@ -4,7 +4,7 @@ import 'package:sugar_pros/core/services/auth_service.dart';
 import 'package:sugar_pros/core/services/patient_service.dart';
 import 'package:sugar_pros/core/utils/exports.dart';
 
-class NutritionTrackerViewModel extends ReactiveViewModel {
+class PatientNutritionTrackerViewModel extends ReactiveViewModel {
   final PatientService _patientService = locator<PatientService>();
   final AuthService _authService = locator<AuthService>();
 

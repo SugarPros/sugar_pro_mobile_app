@@ -2,6 +2,7 @@ import 'package:sugar_pros/core/utils/exports.dart';
 import 'package:sugar_pros/ui/views/dashboard_patient/dashboard_patient_viewmodel.dart';
 import 'package:sugar_pros/ui/views/dashboard_patient/home/patient_home_viewmodel.dart';
 import 'package:sugar_pros/ui/widgets/appointment_box.dart';
+import 'package:sugar_pros/ui/widgets/custom_network_image.dart';
 import 'package:sugar_pros/ui/widgets/svg_icon.dart';
 
 class PatientHomeView extends StatelessWidget {
@@ -17,6 +18,7 @@ class PatientHomeView extends StatelessWidget {
               WidgetsBinding.instance.addPostFrameCallback((_) {
                 viewModel.fetchPatientChatHistory();
                 viewModel.fetchPatientAppointments();
+                viewModel.fetchPatientNotifications();
               });
             },
             builder:
@@ -27,7 +29,7 @@ class PatientHomeView extends StatelessWidget {
                     body: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        TopHeader(),
+                        TopHeader(parentModel: parentModel),
                         20.verticalSpace,
                         Expanded(
                           child: Padding(
@@ -117,7 +119,9 @@ class PatientHomeView extends StatelessWidget {
 }
 
 class TopHeader extends ViewModelWidget<PatientHomeViewModel> {
-  const TopHeader({super.key});
+  const TopHeader({super.key, required this.parentModel});
+
+  final DashboardPatientViewModel parentModel;
 
   @override
   Widget build(BuildContext context, PatientHomeViewModel viewModel) {
@@ -133,7 +137,21 @@ class TopHeader extends ViewModelWidget<PatientHomeViewModel> {
               children: [
                 Row(
                   children: [
-                    Image.asset('alfred'.png, height: 54.h),
+                    if (viewModel.patAccountDetails?.profilePicture == null)
+                      InkWell(
+                        onTap: () => parentModel.setIndex(4),
+                        child: Image.asset('alfred'.png, height: 54.h),
+                      )
+                    else
+                      InkWell(
+                        onTap: () => parentModel.setIndex(4),
+                        child: CustomNetworkImage(
+                          imageUrl: viewModel.patAccountDetails?.profilePicture.asImageUrl,
+                          height: 54.h,
+                          width: 50.w,
+                          fit: BoxFit.cover,
+                        ),
+                      ),
                     5.horizontalSpace,
                     Text.rich(
                       TextSpan(
@@ -157,7 +175,10 @@ class TopHeader extends ViewModelWidget<PatientHomeViewModel> {
                     ),
                   ],
                 ),
-                Image.asset('notif'.png, height: 46.h),
+                InkWell(
+                  onTap: viewModel.navigateToNotifications,
+                  child: Image.asset('notif'.png, height: 46.h),
+                ),
               ],
             ),
           ),

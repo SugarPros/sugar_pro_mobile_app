@@ -73,7 +73,7 @@ class _PatientChatsViewState extends State<PatientChatsView> {
                                   ClipRRect(
                                     borderRadius: BorderRadius.circular(100.r),
                                     child: CustomNetworkImage(
-                                      imageUrl: '',
+                                      imageUrl: widget.chatItem.receiverImage?.asImageUrl,
                                       width: 50.w,
                                       height: 50.w,
                                     ),
@@ -83,17 +83,10 @@ class _PatientChatsViewState extends State<PatientChatsView> {
                                     crossAxisAlignment: CrossAxisAlignment.start,
                                     children: [
                                       Text(
-                                        widget.chatItem.senderName ?? '',
+                                        widget.chatItem.receiverName ?? '',
                                         style: BrandTextStyles.semiBold.copyWith(
                                           fontSize: 18.sp,
                                           color: Colors.black,
-                                        ),
-                                      ),
-                                      Text(
-                                        'Online',
-                                        style: BrandTextStyles.regular.copyWith(
-                                          fontSize: 14.sp,
-                                          color: hexColor('#4A5565'),
                                         ),
                                       ),
                                     ],

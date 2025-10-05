@@ -45,6 +45,21 @@ class PatientLoginViewModel extends BaseViewModel {
     notifyListeners();
   }
 
+  Future getPatientAccount() async {
+    final data = await _authRemoteDataSource.getPatientAccount();
+
+    data.fold(
+      (l) async {
+        flusher(l.message, color: Colors.red);
+      },
+      (r) async {
+        _authService.patAccountDetails = r;
+        _authService.accountDetail = r.accountDetails;
+        notifyListeners();
+      },
+    );
+  }
+
   Future login() async {
     _dialogService.showCustomDialog(
       variant: DialogType.loader,
@@ -68,7 +83,7 @@ class PatientLoginViewModel extends BaseViewModel {
           User(token: r.accessToken, loginUsername: email ?? user?.loginUsername),
         );
         _userService.getUser();
-        fetchPatientDetails();
+        await Future.wait([fetchPatientDetails(), getPatientAccount()]);
       },
     );
   }
@@ -104,8 +119,8 @@ class PatientLoginViewModel extends BaseViewModel {
     );
   }
 
-  void navigateToProviderAccount() {
-    _navigationService.navigateTo(Routes.providerAccount);
+  void navigateToPatientAccount() {
+    _navigationService.navigateTo(Routes.patientAccount);
   }
 
   void navigateToProviderDashboard() {

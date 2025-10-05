@@ -1,16 +1,23 @@
-import 'package:flutter_stripe/flutter_stripe.dart';
 import 'package:sugar_pros/core/data_source/patient_remote_data_source/patient_remote_data_source.dart';
+import 'package:sugar_pros/core/services/patient_service.dart';
 import 'package:sugar_pros/core/utils/exports.dart';
 
 class BookAppointmentViewModel extends IndexTrackingViewModel {
   final DialogService _dialogService = locator<DialogService>();
+  final PatientService _patientService = locator<PatientService>();
+  final NavigationService _navigationService = locator<NavigationService>();
 
   final PatientRemoteDataSource _patientRemoteDataSource = locator<PatientRemoteDataSource>();
 
   final PageController pageController = PageController();
   int activeIndex = 0;
 
-  TextEditingController dobCtrl = TextEditingController();
+  TextEditingController fullNameCtrl = TextEditingController();
+  TextEditingController emailCtrl = TextEditingController();
+  TextEditingController phoneCtrl = TextEditingController();
+  TextEditingController countryCodeCtrl = TextEditingController();
+  TextEditingController dateCtrl = TextEditingController();
+  TextEditingController addressCtrl = TextEditingController();
 
   List<String> timeList = [
     '12:00 AM',
@@ -48,10 +55,10 @@ class BookAppointmentViewModel extends IndexTrackingViewModel {
     notifyListeners();
   }
 
-  DateTime? _dob;
-  DateTime? get dob => _dob;
-  set dob(DateTime? val) {
-    _dob = val;
+  DateTime? _date;
+  DateTime? get date => _date;
+  set date(DateTime? val) {
+    _date = val;
     notifyListeners();
   }
 
@@ -62,10 +69,17 @@ class BookAppointmentViewModel extends IndexTrackingViewModel {
     notifyListeners();
   }
 
-  String? _time;
-  String? get time => _time;
-  set time(String? val) {
-    _time = val;
+  String? _selectedTime;
+  String? get selectedTime => _selectedTime;
+  set selectedTime(String? val) {
+    _selectedTime = val;
+    notifyListeners();
+  }
+
+  String _billingCycle = 'monthly';
+  String get billingCycle => _billingCycle;
+  set billingCycle(String val) {
+    _billingCycle = val;
     notifyListeners();
   }
 
@@ -76,9 +90,29 @@ class BookAppointmentViewModel extends IndexTrackingViewModel {
     notifyListeners();
   }
 
+  String? _stripeToken;
+  String? get stripeToken => _stripeToken;
+  set stripeToken(String? val) {
+    _stripeToken = val;
+    notifyListeners();
+  }
+
   bool get hasSelectedPlan => _selectedPlan != null;
 
   bool get hasSelectedPrice => _selectPrice != null;
+
+  Future fetchPatientAppointments() async {
+    final data = await _patientRemoteDataSource.patAppointments();
+
+    data.fold(
+      (l) async {
+        flusher(l.message, color: Colors.red);
+      },
+      (r) async {
+        _patientService.patientAppointments = r.patAppointments;
+      },
+    );
+  }
 
   Future initiatePayment() async {
     _dialogService.showCustomDialog(
@@ -87,7 +121,10 @@ class BookAppointmentViewModel extends IndexTrackingViewModel {
       title: 'Please wait...',
     );
 
-    final data = await _patientRemoteDataSource.initiate();
+    final data = await _patientRemoteDataSource.initiate(
+      date: dateCtrl.text,
+      time: selectedTime?.stripAmPm(),
+    );
 
     data.fold(
       (l) async {
@@ -95,9 +132,36 @@ class BookAppointmentViewModel extends IndexTrackingViewModel {
         flusher(l.message, color: Colors.red);
       },
       (r) async {
-        _dialogService.completeDialog(DialogResponse());
         log('Stripe: ${r['data']['stripe_key']}');
-        Stripe.instance.applySettings();
+        stripeToken = r['data']['stripe_key'];
+        completePayment();
+      },
+    );
+  }
+
+  Future completePayment() async {
+    final data = await _patientRemoteDataSource.complete(
+      fullname: fullNameCtrl.text,
+      email: emailCtrl.text,
+      phone: phoneCtrl.text,
+      address: addressCtrl.text,
+      countryCode: countryCodeCtrl.text,
+      date: dateCtrl.text,
+      time: selectedTime?.stripAmPm(),
+      stripeToken: stripeToken,
+    );
+
+    data.fold(
+      (l) async {
+        _dialogService.completeDialog(DialogResponse());
+        flusher(l.message, color: Colors.red);
+      },
+      (r) async {
+        await Future.wait([fetchPatientAppointments()]);
+        _dialogService.completeDialog(DialogResponse());
+        _navigationService.back();
+        _navigationService.back();
+        flusher('Payment completed successfully', color: Colors.green);
       },
     );
   }
@@ -113,4 +177,7 @@ class BookAppointmentViewModel extends IndexTrackingViewModel {
   void jumpTo(int val) {
     pageController.jumpToPage(val);
   }
+
+  @override
+  List<ListenableServiceMixin> get listenableServices => [_patientService];
 }

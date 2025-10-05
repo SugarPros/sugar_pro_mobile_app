@@ -1,13 +1,17 @@
 import 'package:dartz/dartz.dart';
+import 'package:dio/dio.dart';
+import 'package:http_parser/http_parser.dart';
 import 'package:sugar_pros/core/data_source/auth_remote_data_source/auth_remote_data_source.dart';
 import 'package:sugar_pros/core/enums/http_method.dart';
 import 'package:sugar_pros/core/models/authentication_response/pat_auth_response.dart';
 import 'package:sugar_pros/core/models/authentication_response/pro_auth_response.dart';
 import 'package:sugar_pros/core/models/pat_basic_details.dart';
+import 'package:sugar_pros/core/models/patient_account_response.dart';
 import 'package:sugar_pros/core/models/patient_dashboard_response.dart';
 import 'package:sugar_pros/core/models/pro_dashboard_response.dart';
 import 'package:sugar_pros/core/services/api/api_service.dart';
 import 'package:sugar_pros/core/utils/exports.dart';
+import 'package:mime/mime.dart';
 
 class AuthRemoteDataSourceImpl extends AuthRemoteDataSource {
   final ApiService _apiService = locator<ApiService>();
@@ -95,6 +99,278 @@ class AuthRemoteDataSourceImpl extends AuthRemoteDataSource {
       url: 'dashboard',
       method: HttpMethod.get,
       fromJson: (json) => PatientDashboardResponse.fromJson(json),
+    );
+  }
+
+  @override
+  Future<Either<AppError, PatientAccountResponse>> getPatientAccount() {
+    return _apiService.makeRequest(
+      url: 'account',
+      method: HttpMethod.get,
+      fromJson: (json) => PatientAccountResponse.fromJson(json),
+    );
+  }
+
+  @override
+  Future<Either<AppError, dynamic>> updatePaientDetails({
+    String? firstName,
+    String? lastName,
+    String? middlename,
+    String? phone,
+    String? email,
+    String? dob,
+    String? gender,
+    String? emergencyName,
+    String? emergencyPhone,
+    String? emergencyRelationship,
+    String? street,
+    String? city,
+    String? zipCode,
+    String? state,
+    String? insuranceProvider,
+    String? insurancePlanNumber,
+    String? insuranceGroupNumber,
+    dynamic licenseFile, // can be local file path or server path
+    String? ssn,
+    String? notificationType,
+  }) async {
+    final Map<String, dynamic> payload = {
+      "fname": firstName,
+      "mname": middlename,
+      "lname": lastName,
+      "dob": dob,
+      "gender": gender,
+      "email": email,
+      "phone": phone,
+      "emmergency_name": emergencyName,
+      "emmergency_relationship": emergencyRelationship,
+      "emmergency_phone": emergencyPhone,
+      "street": street,
+      "city": city,
+      "state": state,
+      "zip_code": zipCode,
+      "insurance_provider": insuranceProvider,
+      "insurance_plan_number": insurancePlanNumber,
+      "insurance_group_number": insuranceGroupNumber,
+      "ssn": ssn,
+      "notification_type": notificationType,
+    };
+
+    if (licenseFile != null) {
+      final file = File(licenseFile.toString());
+      if (file.existsSync()) {
+        // It's a real local file → upload as MultipartFile
+        final fileName = licenseFile.toString().split('/').last;
+        final fileMimeType = lookupMimeType(licenseFile.toString()) ?? 'application/octet-stream';
+
+        payload["license"] = await MultipartFile.fromFile(
+          licenseFile.toString(),
+          filename: fileName,
+          contentType: MediaType.parse(fileMimeType),
+        );
+      } else {
+        // It's just a string path from server (e.g. licenses/license_xxx.jpg)
+        payload["license"] = licenseFile.toString();
+      }
+    }
+
+    return _apiService.makeRequest(
+      url: 'update-account-details',
+      method: HttpMethod.post,
+      data: payload,
+      isFormData: true,
+      fromJson: (data) => data,
+    );
+  }
+
+  @override
+  Future<Either<AppError, dynamic>> uploadProfilePic(dynamic profilePictureFile) async {
+    final fileName = profilePictureFile.toString().split('/').last;
+    final fileMimeType =
+        lookupMimeType(profilePictureFile.toString()) ?? 'application/octet-stream';
+
+    final Map<String, dynamic> payload = {
+      "profilepicture": await MultipartFile.fromFile(
+        profilePictureFile.toString(),
+        filename: fileName,
+        contentType: MediaType.parse(fileMimeType),
+      ),
+    };
+
+    return _apiService.makeRequest(
+      url: 'update-profile-picture',
+      method: HttpMethod.post,
+      data: payload,
+      isFormData: true,
+      fromJson: (data) => data,
+    );
+  }
+
+  @override
+  Future<Either<AppError, dynamic>> sendOtp(String? email) async {
+    return _apiService.makeRequest(
+      url: 'user-account-password-verification',
+      method: HttpMethod.post,
+      data: {'email': email},
+      isFormData: true,
+      fromJson: (data) => data,
+    );
+  }
+
+  @override
+  Future<Either<AppError, dynamic>> confirmOtp({
+    required String? email,
+    required String otp,
+  }) async {
+    return _apiService.makeRequest(
+      url: 'user-account-password-otp-verification',
+      method: HttpMethod.post,
+      data: {'email': email, 'otp': otp},
+      isFormData: true,
+      fromJson: (data) => data,
+    );
+  }
+
+  @override
+  Future<Either<AppError, dynamic>> changePassword({
+    required String? email,
+    required String? currentPassword,
+    required String? newPassword,
+  }) {
+    final Map<String, dynamic> payload = {
+      'email': email,
+      'current_password': currentPassword,
+      'new_password': newPassword,
+    };
+
+    return _apiService.makeRequest(
+      url: 'user-account-password-change',
+      method: HttpMethod.post,
+      data: payload,
+      fromJson: (json) => json,
+    );
+  }
+
+  @override
+  Future<Either<AppError, dynamic>> sendEmailOtp(String? email) async {
+    return _apiService.makeRequest(
+      url: 'user-accout-email-verification',
+      method: HttpMethod.post,
+      data: {'email': email},
+      isFormData: true,
+      fromJson: (data) => data,
+    );
+  }
+
+  @override
+  Future<Either<AppError, dynamic>> confirmEmailOtp({
+    required String? email,
+    required String otp,
+  }) async {
+    return _apiService.makeRequest(
+      url: 'user-accout-otp-verification',
+      method: HttpMethod.post,
+      data: {'email': email, 'otp': otp},
+      isFormData: true,
+      fromJson: (data) => data,
+    );
+  }
+
+  @override
+  Future<Either<AppError, dynamic>> changeEmail({
+    required String? email,
+    required String? newEmail,
+    required String? currentPassword,
+  }) {
+    final Map<String, dynamic> payload = {
+      'email': email,
+      'new_email': newEmail,
+      'current_password': currentPassword,
+    };
+
+    return _apiService.makeRequest(
+      url: 'user-accout-email-change',
+      method: HttpMethod.post,
+      data: payload,
+      fromJson: (json) => json,
+    );
+  }
+
+  @override
+  Future<Either<AppError, dynamic>> deleteAccount() {
+    return _apiService.makeRequest(
+      url: 'delete-account',
+      method: HttpMethod.get,
+      fromJson: (json) => json,
+    );
+  }
+
+  @override
+  Future<Either<AppError, dynamic>> sendOtpTouser({
+    required String? username,
+    required String? email,
+    required String? prefixCode,
+    required String? mobile,
+  }) async {
+    final Map<String, dynamic> payload = {
+      "username": username,
+      "email": email,
+      "prefix_code": prefixCode,
+      "mobile": mobile,
+    };
+
+    return _apiService.makeRequest(
+      url: 'send-otp-to-user',
+      method: HttpMethod.post,
+      data: payload,
+      isFormData: true,
+      fromJson: (data) => data,
+    );
+  }
+
+  @override
+  Future<Either<AppError, dynamic>> verifyOtp({
+    required String? username,
+    required String? email,
+    required String? otp,
+  }) async {
+    final Map<String, dynamic> payload = {
+      "username": username,
+      "email": email,
+      "otp": otp,
+    };
+
+    return _apiService.makeRequest(
+      url: 'verify-otp',
+      method: HttpMethod.post,
+      data: payload,
+      isFormData: true,
+      fromJson: (data) => data,
+    );
+  }
+
+   @override
+  Future<Either<AppError, dynamic>> sugnupNewUser({
+    required String? username,
+    required String? email,
+    required String? prefixCode,
+    required String? mobile,
+    required String? password,
+  }) async {
+    final Map<String, dynamic> payload = {
+      "username": username,
+      "email": email,
+      "prefix_code": prefixCode,
+      "mobile": mobile,
+      "password": password,
+    };
+
+    return _apiService.makeRequest(
+      url: 'signup-new-user',
+      method: HttpMethod.post,
+      data: payload,
+      isFormData: true,
+      fromJson: (data) => data,
     );
   }
 }

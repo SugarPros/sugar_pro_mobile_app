@@ -1,5 +1,4 @@
 import 'package:sugar_pros/core/exceptions/network_exception.dart';
-
 import '../utils/network_utils.dart' as network_utils;
 
 class ErrorHandler {
@@ -15,34 +14,39 @@ class ErrorHandler {
     }
 
     final rawData = e.response?.data;
-
-    // Decode JSON response
     final data = network_utils.decodeResponseBodyToJson(rawData);
 
-    final errors = data['errors'];
     String errorMessage = 'An unexpected error occurred.';
 
-    if (errors is List) {
-      final messages = errors
-          .map((error) => error['errorMessages'] as List?)
-          .where((list) => list != null && list.isNotEmpty)
-          .expand((list) => list!)
-          .toList();
+    // ✅ Handle "message" key (your API style)
+    if (data is Map && data.containsKey('message')) {
+      errorMessage = data['message']?.toString() ?? errorMessage;
+    }
+    // ✅ Handle "errors" key (old style)
+    else if (data is Map && data.containsKey('errors')) {
+      final errors = data['errors'];
 
-      if (messages.isNotEmpty) {
-        errorMessage = messages.join('\n');
-      }
-    } else if (errors is String) {
-      errorMessage = errors;
-    } else if (errors is Map) {
-      // Flatten and clean up Map values
-      final messages = errors.values.expand((val) {
-        if (val is List) return val;
-        return [val];
-      }).toList();
+      if (errors is List) {
+        final messages = errors
+            .map((error) => error['errorMessages'] as List?)
+            .where((list) => list != null && list.isNotEmpty)
+            .expand((list) => list!)
+            .toList();
 
-      if (messages.isNotEmpty) {
-        errorMessage = messages.join('\n');
+        if (messages.isNotEmpty) {
+          errorMessage = messages.join('\n');
+        }
+      } else if (errors is String) {
+        errorMessage = errors;
+      } else if (errors is Map) {
+        final messages = errors.values.expand((val) {
+          if (val is List) return val;
+          return [val];
+        }).toList();
+
+        if (messages.isNotEmpty) {
+          errorMessage = messages.join('\n');
+        }
       }
     }
 

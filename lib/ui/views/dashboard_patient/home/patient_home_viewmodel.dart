@@ -1,6 +1,7 @@
 import 'package:sugar_pros/core/data_source/patient_remote_data_source/patient_remote_data_source.dart';
 import 'package:sugar_pros/core/models/authentication_response/pat_auth_response.dart';
 import 'package:sugar_pros/core/models/pat_basic_details.dart';
+import 'package:sugar_pros/core/models/patient_account_response.dart';
 import 'package:sugar_pros/core/models/patient_dashboard_response.dart';
 import 'package:sugar_pros/core/services/auth_service.dart';
 import 'package:sugar_pros/core/services/patient_service.dart';
@@ -19,8 +20,9 @@ class PatientHomeViewModel extends BaseViewModel {
   PatAuthResponse? get user => _authService.patAuthResponse;
   PatBasicData? get details => _authService.patBasicData;
   PatientDashboardResponse? get dashboard => _authService.patDashboardData;
+  PatientAccountResponse? get patAccountDetails => _authService.patAccountDetails;
 
-    Future<void> _launchInBrowser(Uri url) async {
+  Future<void> _launchInBrowser(Uri url) async {
     if (!await launchUrl(url, mode: LaunchMode.externalApplication)) {
       throw Exception('Could not launch $url');
     }
@@ -70,13 +72,32 @@ class PatientHomeViewModel extends BaseViewModel {
       },
       (r) async {
         _patientService.patientAppointments = r.patAppointments;
-        log('Length: ${r.patAppointments?.length}');
         notifyListeners();
       },
     );
   }
 
-  void navigateToPdAppoitmentDetails(PatAppointments? app) async {
-    _navigationService.navigateToView(DashboardPatAppointmentDetailView(app: app ?? PatAppointments()));
+  Future fetchPatientNotifications() async {
+    final data = await _patientRemoteDataSource.patNotifications();
+
+    data.fold(
+      (l) async {
+        flusher(l.message, color: Colors.red);
+      },
+      (r) async {
+        _patientService.patientNotifications = r.notifications;
+        notifyListeners();
+      },
+    );
+  }
+
+  void navigateToPdAppoitmentDetails(PatAppointments? app) {
+    _navigationService.navigateToView(
+      DashboardPatAppointmentDetailView(app: app ?? PatAppointments()),
+    );
+  }
+
+  void navigateToNotifications() {
+    _navigationService.navigateTo(Routes.notifcations);
   }
 }

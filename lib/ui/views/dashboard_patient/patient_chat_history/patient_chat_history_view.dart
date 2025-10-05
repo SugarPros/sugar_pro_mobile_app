@@ -1,4 +1,3 @@
-import 'package:sugar_pros/core/models/chat_list_response.dart';
 import 'package:sugar_pros/core/utils/exports.dart';
 import 'package:sugar_pros/ui/views/dashboard_patient/patient_chat_history/patient_chat_history_viewmodel.dart';
 import 'package:sugar_pros/ui/widgets/custom_network_image.dart';
@@ -121,17 +120,22 @@ class PatientChatHistoryView extends StackedView<PatientChatHistoryViewModel> {
                       padding: EdgeInsets.zero,
                       physics: NeverScrollableScrollPhysics(),
                       shrinkWrap: true,
-                      itemCount: viewModel.chatHistoryList?.take(1).length ?? 0,
+                      itemCount: viewModel.chatHistoryList.length,
                       separatorBuilder: (ctx, i) => 20.verticalSpace,
                       itemBuilder: (ctx, i) {
-                        final chat = viewModel.chatHistoryList?[i];
+                        final chat = viewModel.chatHistoryList[i];
+
+                        // If provider is the sender, use sender info, else use receiver info
+                        final isProviderSender = chat.senderType == "provider";
+                        final img = isProviderSender ? chat.senderImage : chat.receiverImage;
+                        final name = isProviderSender ? chat.senderName : chat.receiverName;
                         return ChatTile(
-                          img: 'http://31.97.14.107:8080/${chat?.senderImage}',
-                          name: chat?.senderName,
-                          lastMessage: chat?.mainMessage,
-                          messageStatus: chat?.status,
-                          messageTime: chat?.createdAt,
-                          onTap: () => viewModel.navigateToChatView(chat ?? ChatHistoryList()),
+                          img: img?.asImageUrl,
+                          name: name,
+                          lastMessage: chat.mainMessage,
+                          messageStatus: chat.status,
+                          messageTime: chat.createdAt,
+                          onTap: () => viewModel.navigateToChatView(chat),
                         );
                       },
                     ),

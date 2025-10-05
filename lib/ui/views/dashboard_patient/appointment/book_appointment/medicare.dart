@@ -84,24 +84,21 @@ class Medicare extends StatelessWidget {
                               ),
                             ),
                             placeholder: 'MM/DD/YYYY',
-                            controller: viewModel.dobCtrl,
-                            initialDate: DateTime(
-                              DateTime.now().year - 19,
-                              DateTime.now().month,
-                              DateTime.now().day,
-                            ),
+                            controller: viewModel.dateCtrl,
+                            initialDate: DateTime.now(),
+                            // startDate: DateTime.now(),
                             stopDate: DateTime(2053),
-                            onDateSelected: (value) => viewModel.dob = value,
+                            onDateSelected: (value) => viewModel.date = value,
                             value:
-                                viewModel.dob == null
+                                viewModel.date == null
                                     ? null
-                                    : viewModel.dob!.toString().split(' ')[0],
+                                    : viewModel.date!.toString().split(' ')[0],
                           ),
                           15.verticalSpace,
                           CustomDropdown(
                             label: 'Time',
                             hint: 'Select time',
-                            value: viewModel.time,
+                            value: viewModel.selectedTime,
                             items:
                                 viewModel.timeList.map((String gender) {
                                   return DropdownMenuItem<String>(
@@ -115,7 +112,7 @@ class Medicare extends StatelessWidget {
                                     ),
                                   );
                                 }).toList(),
-                            onChanged: (val) => viewModel.time = val,
+                            onChanged: (val) => viewModel.selectedTime = val,
                           ),
                           15.verticalSpace,
                           CustomTextField(

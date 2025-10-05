@@ -26,7 +26,7 @@ class CashPayment extends StatelessWidget {
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             InkWell(
-                              onTap: () => viewModel.jumpTo(0),
+                              onTap: () => viewModel.jumpTo(2),
                               child: Container(
                                 padding: EdgeInsets.all(12.w),
                                 decoration: ShapeDecoration(
@@ -68,50 +68,136 @@ class CashPayment extends StatelessWidget {
                               fontSize: 16.sp,
                             ),
                           ),
-                          15.verticalSpace,
-                          InkWell(
-                            onTap: () => viewModel.selectPrice = 'basic',
-                            child: _PriceOption(
-                              title: 'Annual Basic',
-                              price: '\$1,089',
-                              features: [
-                                '1 visit/month',
-                                'Medication management',
-                                'Basic lab review',
+                          25.verticalSpace,
+                          Container(
+                            decoration: ShapeDecoration(
+                              color: hexColor('#F3F4F6'),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(50.r),
+                              ),
+                            ),
+                            child: Row(
+                              children: [
+                                Expanded(
+                                  child: GestureDetector(
+                                    onTap: () => viewModel.billingCycle = 'monthly',
+                                    child: BillingOption(
+                                      title: 'Monthly',
+                                      isSelected: viewModel.billingCycle == 'monthly',
+                                    ),
+                                  ),
+                                ),
+                                Expanded(
+                                  child: GestureDetector(
+                                    onTap: () => viewModel.billingCycle = 'annually',
+                                    child: BillingOption(
+                                      title: 'Annually',
+                                      isSelected: viewModel.billingCycle == 'annually',
+                                    ),
+                                  ),
+                                ),
                               ],
-                              isSelected: viewModel.selectPrice == 'basic',
                             ),
                           ),
-                          15.verticalSpace,
-                          InkWell(
-                            onTap: () => viewModel.selectPrice = 'premium',
-                            child: _PriceOption(
-                              title: 'Annual Premium',
-                              price: '\$1,639',
-                              features: [
-                                'Everything in Basic',
-                                'CGM data analysis',
-                                'Weight loss support',
-                                'Urgent care messaging',
+                          20.verticalSpace,
+                          if (viewModel.billingCycle == 'monthly')
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                InkWell(
+                                  onTap: () => viewModel.selectPrice = 'basic',
+                                  child: _PriceOptionMonthly(
+                                    title: 'Basic',
+                                    price: '\$99/m',
+                                    features: [
+                                      '1 visit/month',
+                                      'Medication management',
+                                      'Basic lab review',
+                                    ],
+                                    isSelected: viewModel.selectPrice == 'basic',
+                                  ),
+                                ),
+                                15.verticalSpace,
+                                InkWell(
+                                  onTap: () => viewModel.selectPrice = 'premium',
+                                  child: _PriceOptionMonthly(
+                                    title: 'Premium',
+                                    price: '\$149/m',
+                                    features: [
+                                      'Everything in Basic',
+                                      'CGM data analysis',
+                                      'Weight loss support',
+                                      'Urgent care messaging',
+                                    ],
+                                    isSelected: viewModel.selectPrice == 'premium',
+                                  ),
+                                ),
+                                15.verticalSpace,
+                                InkWell(
+                                  onTap: () => viewModel.selectPrice = 'vip',
+                                  child: _PriceOptionMonthly(
+                                    title: 'VIP',
+                                    price: '\$199/m',
+                                    features: [
+                                      'Everything in Premium',
+                                      'Unlimited provider messaging',
+                                      'Advanced testing',
+                                      'Dedicated care coordinator',
+                                    ],
+                                    isSelected: viewModel.selectPrice == 'vip',
+                                  ),
+                                ),
                               ],
-                              isSelected: viewModel.selectPrice == 'premium',
-                            ),
-                          ),
-                          15.verticalSpace,
-                          InkWell(
-                            onTap: () => viewModel.selectPrice = 'vip',
-                            child: _PriceOption(
-                              title: 'Annual VIP',
-                              price: '\$2,189',
-                              features: [
-                                'Everything in Premium',
-                                'Unlimited provider messaging',
-                                'Advanced testing',
-                                'Dedicated care coordinator',
+                            )
+                          else
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                InkWell(
+                                  onTap: () => viewModel.selectPrice = 'basic',
+                                  child: _PriceOptionAnnually(
+                                    title: 'Annual Basic',
+                                    price: '\$1,089',
+                                    features: [
+                                      '1 visit/month',
+                                      'Medication management',
+                                      'Basic lab review',
+                                    ],
+                                    isSelected: viewModel.selectPrice == 'basic',
+                                  ),
+                                ),
+                                15.verticalSpace,
+                                InkWell(
+                                  onTap: () => viewModel.selectPrice = 'premium',
+                                  child: _PriceOptionAnnually(
+                                    title: 'Annual Premium',
+                                    price: '\$1,639',
+                                    features: [
+                                      'Everything in Basic',
+                                      'CGM data analysis',
+                                      'Weight loss support',
+                                      'Urgent care messaging',
+                                    ],
+                                    isSelected: viewModel.selectPrice == 'premium',
+                                  ),
+                                ),
+                                15.verticalSpace,
+                                InkWell(
+                                  onTap: () => viewModel.selectPrice = 'vip',
+                                  child: _PriceOptionAnnually(
+                                    title: 'Annual VIP',
+                                    price: '\$2,189',
+                                    features: [
+                                      'Everything in Premium',
+                                      'Unlimited provider messaging',
+                                      'Advanced testing',
+                                      'Dedicated care coordinator',
+                                    ],
+                                    isSelected: viewModel.selectPrice == 'vip',
+                                  ),
+                                ),
                               ],
-                              isSelected: viewModel.selectPrice == 'vip',
                             ),
-                          ),
                           40.verticalSpace,
                           CustomButton(
                             onTap: () {
@@ -150,13 +236,40 @@ class CashPayment extends StatelessWidget {
   }
 }
 
-class _PriceOption extends StatelessWidget {
+class BillingOption extends StatelessWidget {
+  const BillingOption({super.key, required this.title, required this.isSelected});
+
+  final String title;
+  final bool isSelected;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: EdgeInsets.symmetric(vertical: 12.h),
+      decoration: ShapeDecoration(
+        color: isSelected ? hexColor('#2889AA') : Colors.white,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(50.r)),
+      ),
+      child: Center(
+        child: Text(
+          title,
+          style: BrandTextStyles.bold.copyWith(
+            color: isSelected ? Colors.white : hexColor('#1E2939'),
+            fontSize: 14.sp,
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _PriceOptionMonthly extends StatelessWidget {
   final String title;
   final String price;
   final bool isSelected;
   final List<String> features;
 
-  const _PriceOption({
+  const _PriceOptionMonthly({
     required this.title,
     required this.isSelected,
     required this.features,
@@ -181,7 +294,72 @@ class _PriceOption extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(
-                'Basic',
+                title,
+                style: BrandTextStyles.semiBold.copyWith(
+                  color: hexColor('#133A59'),
+                  fontSize: 18.sp,
+                ),
+              ),
+              Text(
+                price,
+                style: BrandTextStyles.medium.copyWith(color: hexColor('#133A59'), fontSize: 20.sp),
+              ),
+            ],
+          ),
+          5.verticalSpace,
+          Text(
+            'Best For',
+            style: BrandTextStyles.regular.copyWith(color: hexColor('#1E2939'), fontSize: 16.sp),
+          ),
+          Text(
+            'Maintenance care',
+            style: BrandTextStyles.regular.copyWith(color: hexColor('#4A5565'), fontSize: 14.sp),
+          ),
+          5.verticalSpace,
+          ...features.map(
+            (feature) => Text(
+              '• $feature',
+              style: BrandTextStyles.regular.copyWith(color: hexColor('#4A5565'), fontSize: 14.sp),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _PriceOptionAnnually extends StatelessWidget {
+  final String title;
+  final String price;
+  final bool isSelected;
+  final List<String> features;
+
+  const _PriceOptionAnnually({
+    required this.title,
+    required this.isSelected,
+    required this.features,
+    required this.price,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: double.infinity,
+      padding: EdgeInsets.symmetric(vertical: 15.h, horizontal: 12.w),
+      decoration: ShapeDecoration(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(10.r),
+          side: BorderSide(color: isSelected ? hexColor('#2889AA') : hexColor('#D1D5DC'), width: 1),
+        ),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                title,
                 style: BrandTextStyles.semiBold.copyWith(
                   color: hexColor('#133A59'),
                   fontSize: 18.sp,

@@ -6,13 +6,24 @@ import 'package:sugar_pros/core/models/chat_list_response.dart';
 import 'package:sugar_pros/core/models/nutrition_tracker_response.dart';
 import 'package:sugar_pros/core/models/pat_appointment_respons.dart';
 import 'package:sugar_pros/core/models/patient_ai_chatlist_response.dart';
+import 'package:sugar_pros/core/models/patient_notification_response.dart';
 import 'package:sugar_pros/core/models/patient_record_response.dart';
+import 'package:sugar_pros/core/models/quest_lab_response.dart';
 import 'package:sugar_pros/core/models/related_chat_repsonse.dart';
 import 'package:sugar_pros/core/services/api/api_service.dart';
 import 'package:sugar_pros/core/utils/exports.dart';
 
 class PatientRemoteDataSourceImpl extends PatientRemoteDataSource {
   final ApiService _apiService = locator<ApiService>();
+
+  @override
+  Future<Either<AppError, PatientNotificationResponse>> patNotifications() {
+    return _apiService.makeRequest(
+      url: 'notifications',
+      method: HttpMethod.get,
+      fromJson: (json) => PatientNotificationResponse.fromJson(json),
+    );
+  }
 
   @override
   Future<Either<AppError, PatAppointmentResponse>> patAppointments() {
@@ -128,11 +139,78 @@ class PatientRemoteDataSourceImpl extends PatientRemoteDataSource {
   }
 
   @override
-  Future<Either<AppError, dynamic>> initiate({DateTime? date, String? time}) {
+  Future<Either<AppError, dynamic>> connectDexcom() {
+    return _apiService.makeRequest(
+      url: 'connect-dexcom',
+      method: HttpMethod.get,
+      fromJson: (json) => json,
+    );
+  }
+
+  @override
+  Future<Either<AppError, dynamic>> ePrescriptions() {
+    return _apiService.makeRequest(
+      url: 'e-prescriptions',
+      method: HttpMethod.get,
+      fromJson: (json) => json,
+    );
+  }
+
+  @override
+  Future<Either<AppError, QuestLabResponse>> questLab() {
+    return _apiService.makeRequest(
+      url: 'quest-lab',
+      method: HttpMethod.get,
+      fromJson: (json) => QuestLabResponse.fromJson(json),
+    );
+  }
+
+  @override
+  Future<Either<AppError, dynamic>> clinicalNotes() {
+    return _apiService.makeRequest(
+      url: 'clinical-notes',
+      method: HttpMethod.get,
+      fromJson: (json) => json,
+    );
+  }
+
+  @override
+  Future<Either<AppError, dynamic>> initiate({required String? date, required String? time}) {
     return _apiService.makeRequest(
       url: 'appointments/initiate',
       method: HttpMethod.post,
-      data: {'date': '2025-10-12', 'time': '12:00'},
+      data: {'date': date, 'time': time},
+      // isFormData: true,
+      fromJson: (json) => json,
+    );
+  }
+
+  @override
+  Future<Either<AppError, dynamic>> complete({
+    required String? fullname,
+    required String? email,
+    required String phone,
+    required String? address,
+    required String? countryCode,
+    required String? date,
+    required String? time,
+    required String? stripeToken,
+  }) {
+    final Map<String, dynamic> payload = {
+      "stripe_token": stripeToken,
+      "date": date,
+      "time": time,
+      "full_name": fullname,
+      "address": address,
+      "email": email,
+      "phone": phone,
+      "country_code": countryCode,
+    };
+
+    return _apiService.makeRequest(
+      url: 'appointments/complete',
+      method: HttpMethod.post,
+      data: payload,
       // isFormData: true,
       fromJson: (json) => json,
     );

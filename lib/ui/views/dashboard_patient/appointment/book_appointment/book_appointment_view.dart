@@ -1,6 +1,7 @@
 import 'package:sugar_pros/core/utils/exports.dart';
 import 'package:sugar_pros/ui/views/dashboard_patient/appointment/book_appointment/book_appointment_viewmodel.dart';
 import 'package:sugar_pros/ui/views/dashboard_patient/appointment/book_appointment/cash_payment.dart';
+import 'package:sugar_pros/ui/views/dashboard_patient/appointment/book_appointment/cash_payment_form.dart';
 import 'package:sugar_pros/ui/views/dashboard_patient/appointment/book_appointment/medicare.dart';
 import 'package:sugar_pros/ui/views/dashboard_patient/appointment/book_appointment/select_plan.dart';
 
@@ -28,7 +29,7 @@ class BookAppointmentView extends StackedView<BookAppointmentViewModel> {
                         viewModel.setIndex(index);
                         viewModel.activeIndex = index;
                       },
-                      children: [SelectPlan(), Medicare(), CashPayment()],
+                      children: [SelectPlan(), Medicare(), CashPaymentForm(), CashPayment()],
                     ),
                   ),
                 ],

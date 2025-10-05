@@ -1,51 +1,30 @@
 // ignore_for_file: deprecated_member_use
 
 import 'package:sugar_pros/core/utils/exports.dart';
-import 'package:sugar_pros/ui/views/dashboard_patient/results/nutrition_tracker/nutrition_sheet.dart';
-import 'package:sugar_pros/ui/views/dashboard_patient/results/nutrition_tracker/nutrition_tracker_viewmodel.dart';
+import 'package:sugar_pros/ui/views/dashboard_patient/patient_data/patient_nutrition_tracker/patient_nutrition_sheet.dart';
+import 'package:sugar_pros/ui/views/dashboard_patient/patient_data/patient_nutrition_tracker/patient_nutrition_tracker_viewmodel.dart';
 import 'package:sugar_pros/ui/widgets/svg_icon.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-class NutritionTrackerView extends StackedView<NutritionTrackerViewModel> {
-  const NutritionTrackerView({super.key});
+class PatientNutritionTrackerView extends StackedView<PatientNutritionTrackerViewModel> {
+  const PatientNutritionTrackerView({super.key});
 
   @override
-  void onViewModelReady(NutritionTrackerViewModel viewModel) {
+  void onViewModelReady(PatientNutritionTrackerViewModel viewModel) {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       viewModel.nutritionTracker();
     });
   }
 
   @override
-  Widget builder(BuildContext context, NutritionTrackerViewModel viewModel, Widget? child) {
+  Widget builder(BuildContext context, PatientNutritionTrackerViewModel viewModel, Widget? child) {
     return Scaffold(
       backgroundColor: hexColor('#F3F4F6'),
-      body: SafeArea(
+      body: SingleChildScrollView(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             20.verticalSpace,
-            Padding(
-              padding: EdgeInsets.only(left: 18.w),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  GestureDetector(
-                    onTap: () => locator<NavigationService>().back(),
-                    child: Image.asset('back'.png, height: 46.h),
-                  ),
-                  Text(
-                    'Nutrition Tracker',
-                    style: BrandTextStyles.medium.copyWith(
-                      fontSize: 18.sp,
-                      color: hexColor('#121212'),
-                    ),
-                  ),
-                  SizedBox(width: 46.w, height: 46.w),
-                ],
-              ),
-            ),
-            10.verticalSpace,
             Padding(
               padding: EdgeInsets.symmetric(horizontal: 18.w),
               child: CustomTextField(
@@ -59,82 +38,74 @@ class NutritionTrackerView extends StackedView<NutritionTrackerViewModel> {
                 ),
               ),
             ),
-            Expanded(
-              child: Padding(
-                padding: EdgeInsets.symmetric(horizontal: 18.w),
-                child: Stack(
-                  children: [
-                    SingleChildScrollView(
-                      child: Column(
+            Padding(
+              padding: EdgeInsets.symmetric(horizontal: 18.w),
+              child: Stack(
+                children: [
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      20.verticalSpace,
+                      ListView.separated(
+                        padding: EdgeInsets.zero,
+                        shrinkWrap: true,
+                        physics: NeverScrollableScrollPhysics(),
+                        itemCount: viewModel.foods.length,
+                        separatorBuilder: (ctx, i) => 15.verticalSpace,
+                        itemBuilder: (ctx, i) {
+                          final food = viewModel.foods[i];
+                          return NutitionBoxList(
+                            title: food.name ?? '',
+                            kCal: food.calories ?? '',
+                            cup: food.servingDescription ?? '',
+                            protein: food.protein ?? '',
+                            carbs: food.carbs ?? '',
+                            fat: food.fat ?? '',
+                            onTap: () {
+                              bottomModalSetup(
+                                context: context,
+                                child: PatientNutritionSheet(food: food),
+                              );
+                            },
+                            url: () {
+                              launch(food.foodUrl ?? '');
+                            },
+                          );
+                        },
+                      ),
+                    ],
+                  ),
+                  SizedBox(height: bottomPadding(context) + 100.h),
+                  Positioned(
+                    bottom: 20.h,
+                    left: 0,
+                    right: 0,
+                    child: Container(
+                      padding: EdgeInsets.symmetric(vertical: 16.h),
+                      margin: EdgeInsets.symmetric(horizontal: 18.h),
+                      decoration: ShapeDecoration(
+                        color: hexColor('#2889AA'),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadiusGeometry.circular(7.r),
+                        ),
+                      ),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              20.verticalSpace,
-                              ListView.separated(
-                                padding: EdgeInsets.zero,
-                                shrinkWrap: true,
-                                physics: NeverScrollableScrollPhysics(),
-                                itemCount: viewModel.foods.length,
-                                separatorBuilder: (ctx, i) => 15.verticalSpace,
-                                itemBuilder: (ctx, i) {
-                                  final food = viewModel.foods[i];
-                                  return NutitionBoxList(
-                                    title: food.name ?? '',
-                                    kCal: food.calories ?? '',
-                                    cup: food.servingDescription ?? '',
-                                    protein: food.protein ?? '',
-                                    carbs: food.carbs ?? '',
-                                    fat: food.fat ?? '',
-                                    onTap: () {
-                                      bottomModalSetup(
-                                        context: context,
-                                        child: NutritionSheet(food: food),
-                                      );
-                                    },
-                                    url: () {
-                                      launch(food.foodUrl ?? '');
-                                    },
-                                  );
-                                },
-                              ),
-                            ],
+                          Text(
+                            'Upload Image',
+                            style: BrandTextStyles.bold.copyWith(
+                              color: Colors.white,
+                              fontSize: 16.sp,
+                            ),
                           ),
-                          SizedBox(height: bottomPadding(context) + 100.h),
+                          5.horizontalSpace,
+                          SvgIcon('upload'.svg),
                         ],
                       ),
                     ),
-                    Positioned(
-                      bottom: 20.h,
-                      left: 0,
-                      right: 0,
-                      child: Container(
-                        padding: EdgeInsets.symmetric(vertical: 16.h),
-                        margin: EdgeInsets.symmetric(horizontal: 18.h),
-                        decoration: ShapeDecoration(
-                          color: hexColor('#2889AA'),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadiusGeometry.circular(7.r),
-                          ),
-                        ),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Text(
-                              'Upload Image',
-                              style: BrandTextStyles.bold.copyWith(
-                                color: Colors.white,
-                                fontSize: 16.sp,
-                              ),
-                            ),
-                            5.horizontalSpace,
-                            SvgIcon('upload'.svg),
-                          ],
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
+                  ),
+                ],
               ),
             ),
           ],
@@ -144,7 +115,7 @@ class NutritionTrackerView extends StackedView<NutritionTrackerViewModel> {
   }
 
   @override
-  NutritionTrackerViewModel viewModelBuilder(BuildContext context) => NutritionTrackerViewModel();
+  PatientNutritionTrackerViewModel viewModelBuilder(BuildContext context) => PatientNutritionTrackerViewModel();
 }
 
 class NutitionBoxList extends StatelessWidget {

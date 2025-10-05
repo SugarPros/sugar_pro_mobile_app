@@ -1,8 +1,8 @@
 import 'package:sugar_pros/core/models/nutrition_tracker_response.dart';
 import 'package:sugar_pros/core/utils/exports.dart';
 
-class NutritionSheet extends StatelessWidget {
-  const NutritionSheet({super.key, required this.food});
+class PatientNutritionSheet extends StatelessWidget {
+  const PatientNutritionSheet({super.key, required this.food});
 
   final Foods food;
 
